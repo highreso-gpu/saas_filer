@@ -12,6 +12,7 @@ from filer.embeddings import FilerGroupEmbeddings
 from filer.dreambooths import FilerGroupDreambooths
 from filer.loras import FilerGroupLoras
 from filer.hypernetworks import FilerGroupHypernetworks
+from filer.controlnet import FilerGroupControlNet
 from filer.extensions import FilerGroupExtensions
 from filer.images import FilerGroupImages
 from filer.files import FilerGroupFiles
@@ -25,18 +26,20 @@ def js_only():
 def check_backup_dir():
     settings = filer_models.load_settings()
     html = ''
+    #* タブ固有でない backup_dir も必須！？いや、他のものと扱いが一緒
     if not settings['backup_dir']:
         html = 'First open the Settings tab and enter the backup directory'
     return html
 
 def save_settings(*input_settings):
     return [
-        filer_models.save_settings(*input_settings),
+        filer_models.save_settings(*input_settings),    # config.json 更新（なければ作成）
         filer_models.load_backup_dir('checkpoints'),
         filer_models.load_backup_dir('embeddings'),
         filer_models.load_backup_dir('dreambooths'),
         filer_models.load_backup_dir('loras'),
         filer_models.load_backup_dir('hypernetworks'),
+        filer_models.load_backup_dir('controlnet'),
         filer_models.load_backup_dir('extensions'),
         filer_models.load_backup_dir('images'),
         ]
@@ -268,8 +271,8 @@ def ui_set(tab1, tab2):
         )
 
     if tab1 == 'Hypernetworks':
-        elms[tab1][tab2]['title'] = gr.Text(elem_id=f"{tab1.lower()}_{tab2.lower()}_title", visible=False).style(container=False)
-        elms[tab1][tab2]['state'] = gr.Button(elem_id=f"state_{tab1.lower()}_{tab2.lower()}_button", visible=False).style(container=False)
+        elms[tab1][tab2]['title'] = gr.Text(elem_id=f"{tab1.lower()}_{tab2.lower()}_title", visible=False, container=False)
+        elms[tab1][tab2]['state'] = gr.Button(elem_id=f"state_{tab1.lower()}_{tab2.lower()}_button", visible=False, container=False)
         elms[tab1][tab2]['state'].click(
             fn=getattr(globals()[f"FilerGroup{tab1}"], f"state_{tab2.lower()}"),
             inputs=[elms[tab1][tab2]['title']],
@@ -350,6 +353,15 @@ def on_ui_tabs():
                         ui_set("Hypernetworks", "Backup")
                     with gr.TabItem("Download"):
                         ui_set("Hypernetworks", "Download")
+            with gr.TabItem("ControlNet"):
+                ui_dir("ControlNet")
+                with gr.Tabs() as tabs:
+                    with gr.TabItem("Active"):
+                        ui_set("ControlNet", "Active")
+                    with gr.TabItem("Backup"):
+                        ui_set("ControlNet", "Backup")
+                    with gr.TabItem("Download"):
+                        ui_set("ControlNet", "Download")
             with gr.TabItem("Extensions"):
                 ui_dir("Extensions")
                 with gr.Tabs() as tabs:
@@ -367,9 +379,9 @@ def on_ui_tabs():
             with gr.TabItem("Files"):
                 files_reload = gr.Button("Reload")
                 files_table = gr.HTML("Please push Reload button.")
-                files_title = gr.Text(elem_id=f"files_title", visible=False).style(container=False)
-                files_load = gr.Button(elem_id=f"load_files_button", visible=False).style(container=False)
-                files_download = gr.Button(elem_id=f"download_files_button", visible=False).style(container=False)
+                files_title = gr.Text(elem_id=f"files_title", visible=False, container=False)
+                files_load = gr.Button(elem_id=f"load_files_button", visible=False, container=False)
+                files_download = gr.Button(elem_id=f"download_files_button", visible=False, container=False)
                 files_edit = gr.Textbox(lines=10,interactive=True,label='Loaded File')
                 files_save = gr.Button("Save")
                 files_files = gr.Files(interactive=False)
@@ -413,9 +425,12 @@ def on_ui_tabs():
                 elms['Dreambooths']['backup_dir'],
                 elms['Loras']['backup_dir'],
                 elms['Hypernetworks']['backup_dir'],
+                elms['ControlNet']['backup_dir'],
                 elms['Extensions']['backup_dir'],
                 elms['Images']['backup_dir'],
                 ])
+            # どこのファイルにもセーブはしていないっぽい？（画面リロードで消える）
+            # いや（手動作成した）設定の config.json は更新されている
 
     return (filer, "Filer", "filer"),
 
