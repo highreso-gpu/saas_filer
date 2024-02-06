@@ -25,7 +25,7 @@ def copy(filenames, filelist, dst_dir):
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
 
         dst_path = os.path.join(dst_dir, r['filename'])
-        
+
         if os.path.exists(dst_path):
             print(f"Already exists: {dst_path}")
             continue
@@ -51,11 +51,11 @@ def move(filenames, filelist, dst_dir):
     if not dst_dir:
         raise ValueError('Please Input Backup Directory')
         return
-    
+
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
 
         dst_path = os.path.join(dst_dir, r['filename'])
-        
+
         if os.path.exists(dst_path):
             print(f"Already exists: {dst_path}")
             continue
@@ -116,7 +116,7 @@ def upload(files, dir, is_zip = False):
     # アップロードされたファイルはtmpに存在する
     for file in tqdm.tqdm(files):
         tmp_stem, ext = os.path.splitext(os.path.basename(file.name))
-        
+
         # zipモードの時は展開する
         if is_zip:
             if ext != '.zip':

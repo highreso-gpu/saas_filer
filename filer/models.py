@@ -2,7 +2,13 @@ import os
 import pathlib
 import json
 
+# https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/modules/sd_models.py
 from modules import sd_models
+
+"""
+Backup Dir の読込と更新
+設定パス: table-diffusion-webui/extensions/saas_filer/config/config.json
+"""
 
 default_settings = {
     'backup_dir': '',
@@ -11,12 +17,14 @@ default_settings = {
     'backup_dreambooths_dir': '',
     'backup_loras_dir': '',
     'backup_hypernetworks_dir': '',
+    'backup_controlnet_dir': '',
     'backup_extensions_dir': '',
     'backup_images_dir': '',
     }
 def load_settings():
     p = pathlib.Path(__file__).parts[-4:-2]
     filepath = os.path.join(p[0], p[1], 'config', 'config.json')
+    # print("filepath: {}".format(filepath))
     settings = default_settings
     if os.path.exists(filepath):
         with open(filepath) as f:
@@ -27,13 +35,19 @@ def load_backup_dir(name):
     settings = load_settings()
 
     dir = ''
+    # タブ毎の固有の設定
+    #* and で繋いでいる条件は同じでは？
     if 'backup_'+name+'_dir' in settings and settings['backup_'+name+'_dir']:
         dir = settings['backup_'+name+'_dir']
+    # タブ毎の固有の設定がない場合は backup_dir を使う
     elif 'backup_dir' in settings and settings['backup_dir']:
         dir = os.path.join(settings['backup_dir'], name)
 
+    # config.json に設定があるがパスが存在しない場合は再起的にディレトリを作成
     if dir and not os.path.exists(dir):
         os.makedirs(dir)
+
+    # 設定がなければ何もしない
 
     return dir
 

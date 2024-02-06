@@ -14,6 +14,7 @@ class FilerGroupBase:
 
     @classmethod
     def get_active_dir(cls):
+        # 子クラスでそれぞれオーバーライドしているっぽい
         return ''
 
     @classmethod
