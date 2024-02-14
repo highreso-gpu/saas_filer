@@ -17,6 +17,8 @@ class FilerGroupCheckpoints(FilerGroupBase):
         return shared.cmd_opts.ckpt_dir or sd_models.model_path
 
     @classmethod
+    #* 拡張子を限定しているがリスト表示のみ（実際には指定パスにその他の拡張子のファイルも保存されている）
+    # TODO ⇒ 拡張子限定するなら統一したい、ストレージ管理に弊害が出そう
     def _get_list(cls, dir):
         rs = []
         for filedir, subdirs, filenames in os.walk(dir):
@@ -76,6 +78,7 @@ class FilerGroupCheckpoints(FilerGroupBase):
     def _table(cls, tab2, rs):
         name = f"{cls.name}_{tab2}"
 
+        # TODO ここにファイルおよびディレクトリの使用容量を追加で表示したい
         code = f"""
         <table>
             <thead>
@@ -86,6 +89,7 @@ class FilerGroupCheckpoints(FilerGroupBase):
                     <th>OLD hash</th>
                     <th>vae.pt</th>
                     <th>yaml</th>
+                    <th>download</th>
                 </tr>
             </thead>
             <tbody>
@@ -94,12 +98,15 @@ class FilerGroupCheckpoints(FilerGroupBase):
         for r in rs:
             code += f"""
                 <tr class="filer_{name}_row" data-title="{r['title']}">
-                    <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows_{name}()"></td>
+                    <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows('{name}')"></td>
                     <td class="filer_title">{r['title']}</td>
                     <td class="filer_sha256">{r['sha256']}</td>
                     <td class="filer_hash">{r['hash']}</td>
                     <td class="filer_vae">{r['vae']}</td>
                     <td class="filer_yaml">{r['yaml']}</td>
+                    <td><a href="/file={r['filepath']}" download>
+                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
+                    </a></td>
                 </tr>
                 """
 
