@@ -19,3 +19,21 @@
 #tab_filer input[disabled="disabled"]{
     opacity: 0.5;
 }
+
+/* checkbox の外側の枠線 */
+input[type="checkbox"] {
+    border: 1px solid #ccc; /* 枠線の色と太さを指定 */
+    padding: 5px; /* チェックボックスの周囲の余白を指定 */
+  }
+  
+  /* checkbox のチェックマーク */
+  input[type="checkbox"]:checked {
+    background-color: #007bff; /* チェックされた場合の背景色 */
+  }
+  
+  /* checkbox のチェックマーク */
+  input[type="checkbox"]:checked::before {
+    display: block;
+    text-align: center;
+    color: #fff; /* チェックマークの色 */
+  }
