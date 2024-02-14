@@ -7,18 +7,44 @@ import pprint
 
 from modules import sd_models
 from modules.shared import opts, cmd_opts, state
-from modules.hypernetworks import hypernetwork
+from modules.controlnet import controlnet
 
 from .base import FilerGroupBase
 from . import models as filer_models
 from . import actions as filer_actions
 
-class FilerGroupHypernetworks(FilerGroupBase):
-    name = 'hypernetworks'
+class FilerGroupControlNet(FilerGroupBase):
+    # 必要？外部で参照している？
+    name = 'controlnet'
 
     @classmethod
     def get_active_dir(cls):
-        return os.path.abspath(cmd_opts.hypernetwork_dir)
+        return os.path.abspath(cmd_opts.controlnet_dir)
+        # return "hogehoge"
+        #* cmd_opts を辿る
+        """
+        https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/modules/shared.py
+        from modules import shared_cmd_options, shared_gradio_themes, options, shared_items, sd_models_types
+        cmd_opts = shared_cmd_options.cmd_opts
+        """
+        #* 下 （shared_cmd_options を辿る）
+        """
+        https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/modules/shared_cmd_options.py
+        parser = cmd_args.parser
+
+        if os.environ.get('IGNORE_CMD_ARGS_ERRORS', None) is None:
+            cmd_opts = parser.parse_args()
+        else:
+            cmd_opts, _ = parser.parse_known_args()
+        """
+        #* 下 （cmd_args を辿る）
+        """
+        https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/modules/cmd_args.py
+        import argparse  #  python 標準の parser
+        parser = argparse.ArgumentParser()
+        parser.add_argument("--hypernetwork-dir", type=str, default=os.path.join(models_path, 'hypernetworks'), help="hypernetwork directory"
+        """
+        #*** 結論； 1111 に記述がないとダメ？？
 
     @classmethod
     def state(cls, tab2, filename):
@@ -67,7 +93,9 @@ class FilerGroupHypernetworks(FilerGroupBase):
 
                 r['filename'] = filename
                 r['filepath'] = os.path.join(filedir, filename)
-                r['prompt'] = html.escape(f"<hypernet:{pathlib.Path(r['filepath']).stem}:1.0>")
+                # r['prompt'] = html.escape(f"<hypernet:{pathlib.Path(r['filepath']).stem}:1.0>")
+                #* 元の構造が hypernetwork でないため違いそう
+                r['prompt'] = html.escape(f"<controlnet:{pathlib.Path(r['filepath']).stem}:1.0>")
                 r['title'] = cls.get_rel_path(dir, r['filepath'])
                 r['hash'] = sd_models.model_hash(r['filepath'])
                 r['sha256_path'] = r['filepath'] + '.sha256'
