@@ -7,7 +7,7 @@ from modules import sd_models
 
 """
 Backup Dir の読込と更新
-設定パス: table-diffusion-webui/extensions/saas_filer/config/config.json
+設定パス: stable-diffusion-webui/extensions/saas_filer/config/config.json
 """
 
 default_settings = {
@@ -21,6 +21,8 @@ default_settings = {
     'backup_extensions_dir': '',
     'backup_images_dir': '',
     }
+
+#* 全体の設定を取得
 def load_settings():
     p = pathlib.Path(__file__).parts[-4:-2]
     filepath = os.path.join(p[0], p[1], 'config', 'config.json')
@@ -31,12 +33,12 @@ def load_settings():
             settings.update(json.load(f))
     return settings
 
+#* それぞれ有効な Backup Dir のパスを取得
 def load_backup_dir(name):
     settings = load_settings()
 
     dir = ''
-    # タブ毎の固有の設定
-    #* and で繋いでいる条件は同じでは？
+    # タブ毎の固有の設定（key があってそれが有効である場合）
     if 'backup_'+name+'_dir' in settings and settings['backup_'+name+'_dir']:
         dir = settings['backup_'+name+'_dir']
     # タブ毎の固有の設定がない場合は backup_dir を使う
@@ -66,4 +68,5 @@ def save_settings(*input_settings):
         os.makedirs(os.path.dirname(filepath))
     with open(filepath, "w") as f:
         json.dump(data, f)
-    return json.dumps(data)
+    # return json.dumps(data)
+    return

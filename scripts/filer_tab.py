@@ -230,6 +230,7 @@ def ui_set(tab1, tab2):
         elms[tab1][tab2]['move'] = gr.Button("Move")
         elms[tab1][tab2]['delete'] = gr.Button("Delete")
         # elms[tab1][tab2]['download'] = gr.Button("Download")
+        # elms[tab1][tab2]['download'] = gr.Button("Download")
     with gr.Row():
         #* ファイル一覧
         elms[tab1][tab2]['table'] = gr.HTML("Please push Reload button.")
@@ -341,6 +342,8 @@ def on_ui_tabs():
                         ui_set("Checkpoints", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("Checkpoints", "Backup")
+                    # with gr.TabItem("Download"):
+                    #     ui_set("Checkpoints", "Download")
                     # with gr.TabItem("Download"):
                     #     ui_set("Checkpoints", "Download")
             with gr.TabItem("Embeddings"):
