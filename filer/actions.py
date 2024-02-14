@@ -108,12 +108,13 @@ def download(filenames, filelist):
             zip_path = shutil.make_archive(r['filename'], 'zip', root_dir=r['filepath'])
             files.append(zip_path)
         else:
-            files.append(r['filepath']) 
+            files.append(r['filepath'])
     print("Download prepare Done! (Link is below)")
     return files
 
 def upload(files, dir, is_zip = False):
-    # アップロードされたファイルはtmpに存在する
+    #* 一旦 tmp へアップロード
+    # tqdm.tqdm がプログレスバー
     for file in tqdm.tqdm(files):
         tmp_stem, ext = os.path.splitext(os.path.basename(file.name))
 
@@ -122,7 +123,9 @@ def upload(files, dir, is_zip = False):
             if ext != '.zip':
                 raise ValueError("Only upload zip.")
                 continue
-            filename = tmp_stem[:-8]
+            #* 文字数制限こっちも
+            # filename = tmp_stem[:-8]
+            filename = tmp_stem
             filepath = os.path.join(dir, filename)
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
@@ -132,15 +135,23 @@ def upload(files, dir, is_zip = False):
             if not dir:
                 filer_images.list_append(filename)
         else:
+            #* 文字数制限
             # アップロードされたファイル名の末尾には8桁のランダム文字列が付与されている
-            filename = tmp_stem[:-8] + ext
+            #* ⇒ ランダム文字列の桁数分っぽいが、元のファイル名が短くなるということは付与されていない？
+            # filename = tmp_stem[:-8] + ext
+            filename = tmp_stem + ext
             filepath = os.path.join(dir, filename)
 
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
                 continue
+            # TODO tmp からのコピーではなく直接アップロードできる？zip はまた別問題だが...
+            # 展開後に .zip や単一ファイルを tmp から削除することはできるが、一時的にはやはり容量を食う
+            # 今回の要求としてはストレージにはセンシティブなため、やはり直接処理したいが...
             shutil.copy(file.name, filepath)
+
     print("Upload Done!")
+    #* return がないので呼び出し元では空になる
 
 def urls(urls, dst_dir):
     for url in tqdm.tqdm(urls.split("\n")):
