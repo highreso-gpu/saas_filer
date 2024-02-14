@@ -13,8 +13,8 @@ class FilerGroupBase:
     upload_zip = False
 
     @classmethod
+    # 子クラスでそれぞれ定義
     def get_active_dir(cls):
-        # 子クラスでそれぞれオーバーライドしているっぽい
         return ''
 
     @classmethod
@@ -34,6 +34,7 @@ class FilerGroupBase:
         return path.replace(dir, '').replace(os.sep, '/').lstrip('/')
 
     @classmethod
+    # 子クラスでそれぞれ定義
     def _get_list(cls, dir):
         pass
 
@@ -46,6 +47,9 @@ class FilerGroupBase:
         backup_dir = cls.get_backup_dir()
         if not backup_dir or not os.path.exists(backup_dir):
             return []
+        # print("[list_backup] ---------------------------------------")
+        # print(cls._get_list(backup_dir))
+        # print("-----------------------------------------------------")
         return cls._get_list(backup_dir)
 
     @classmethod
@@ -112,6 +116,7 @@ class FilerGroupBase:
 
     @classmethod
     def upload_backup(cls, files):
+        #* return 中身なし
         return filer_actions.upload(files, cls.get_backup_dir(), cls.upload_zip)
 
     @classmethod

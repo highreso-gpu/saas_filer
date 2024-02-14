@@ -28,12 +28,17 @@ function download_files(button, title) {
 
 function rows(name){
     selected = []
+    // _Select はチェックボックスのクラス名
     gradioApp().querySelectorAll('.filer_'+name+'_select').forEach(function(x){
+        // チェックされているものだけ
         if(x.checked){
+            // テーブル一覧 (elms[tab1][tab2]['table']) からファイル名を取得して表示
+            // ex) .filer_checkpoints_backup_row
             selected.push(x.closest('.filer_'+name+'_row').dataset.title)
         }
     })
 
+    // selected 内に書き込み（表示に関しての制御はここしかなさそう）
     gradioApp().querySelector('#filer_'+name+'_selected label textarea').value = selected.join(",");
  	return selected.join(",")
 }
