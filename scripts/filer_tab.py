@@ -180,8 +180,7 @@ def ui_dir(tab1):
         elms[tab1] = {}
 
     with gr.Row():
-        elms[tab1]['active_dir'] = gr.Textbox(value=globals()[f"FilerGroup{tab1}"].get_active_dir(), label="Active Dir", interactive=False)
-        # elms[tab1]['backup_dir'] = gr.Textbox(value=filer_models.load_backup_dir(tab1.lower()),label="Backup Dir", interactive=False)
+        elms[tab1]['active_dir'] = gr.Textbox(show_label=False, info="Active Dir", value=globals()[f"FilerGroup{tab1}"].get_active_dir(), interactive=False)
         elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Backup Dir", value=filer_models.load_backup_dir(tab1.lower()), interactive=False)
 
 def ui_set(tab1, tab2):

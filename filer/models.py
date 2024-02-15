@@ -11,7 +11,7 @@ Backup Dir の読込と更新
 """
 
 default_settings = {
-    'backup_dir': '',
+    'backup_default_dir': '',
     'backup_checkpoints_dir': '',
     'backup_embeddings_dir': '',
     'backup_dreambooths_dir': '',
@@ -41,9 +41,9 @@ def load_backup_dir(name):
     # タブ毎の固有の設定（key があってそれが有効である場合）
     if 'backup_'+name+'_dir' in settings and settings['backup_'+name+'_dir']:
         dir = settings['backup_'+name+'_dir']
-    # タブ毎の固有の設定がない場合は backup_dir を使う
-    elif 'backup_dir' in settings and settings['backup_dir']:
-        dir = os.path.join(settings['backup_dir'], name)
+    # タブ毎の固有の設定がない場合は backup_default_dir を使う
+    elif 'backup_default_dir' in settings and settings['backup_default_dir']:
+        dir = os.path.join(settings['backup_default_dir'], name)
 
     # config.json に設定があるがパスが存在しない場合は再起的にディレトリを作成
     if dir and not os.path.exists(dir):
