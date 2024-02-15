@@ -222,10 +222,10 @@ def ui_set(tab1, tab2):
             interactive=False
         )
     with gr.Row():
-        if tab1 == 'Checkpoints':
-            elms[tab1][tab2]['invokeai'] = gr.Button("Make InvokeAI models.yaml")
-        if tab1 in ['Checkpoints', 'Hypernetworks', 'Loras']:
-            elms[tab1][tab2]['calc_sha256'] = gr.Button("Calc SHA256")
+        # if tab1 == 'Checkpoints':
+        #     elms[tab1][tab2]['invokeai'] = gr.Button("Make InvokeAI models.yaml")
+        # if tab1 in ['Checkpoints', 'Hypernetworks', 'Loras']:
+        #     elms[tab1][tab2]['calc_sha256'] = gr.Button("Calc SHA256")
         elms[tab1][tab2]['copy'] = gr.Button("Copy")
         elms[tab1][tab2]['move'] = gr.Button("Move")
         elms[tab1][tab2]['delete'] = gr.Button("Delete")
@@ -279,30 +279,30 @@ def ui_set(tab1, tab2):
             outputs=[elms[tab1][tab2]['table'], elms[tab1][tab2]['selected']],
         )
 
-    if tab1 == 'Checkpoints':
-        elms[tab1][tab2]['invokeai'].click(
-            fn=getattr(globals()[f"FilerGroup{tab1}"], f"make_{tab2.lower()}"),
-            _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
-            inputs=[elms[tab1][tab2]['selected']],
-            outputs=[elms[tab1][tab2]['table']],
-        )
+    # if tab1 == 'Checkpoints':
+    #     elms[tab1][tab2]['invokeai'].click(
+    #         fn=getattr(globals()[f"FilerGroup{tab1}"], f"make_{tab2.lower()}"),
+    #         _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
+    #         inputs=[elms[tab1][tab2]['selected']],
+    #         outputs=[elms[tab1][tab2]['table']],
+    #     )
 
-    if tab1 in ['Checkpoints', 'Hypernetworks', 'Loras']:
-        elms[tab1][tab2]['calc_sha256'].click(
-            fn=getattr(globals()[f"FilerGroup{tab1}"], f"calc_{tab2.lower()}"),
-            _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
-            inputs=[elms[tab1][tab2]['selected']],
-            outputs=[elms[tab1][tab2]['table']],
-        )
+    # if tab1 in ['Checkpoints', 'Hypernetworks', 'Loras']:
+    #     elms[tab1][tab2]['calc_sha256'].click(
+    #         fn=getattr(globals()[f"FilerGroup{tab1}"], f"calc_{tab2.lower()}"),
+    #         _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
+    #         inputs=[elms[tab1][tab2]['selected']],
+    #         outputs=[elms[tab1][tab2]['table']],
+    #     )
 
-    if tab1 == 'Hypernetworks':
-        elms[tab1][tab2]['title'] = gr.Text(elem_id=f"{tab1.lower()}_{tab2.lower()}_title", visible=False, container=False)
-        elms[tab1][tab2]['state'] = gr.Button(elem_id=f"state_{tab1.lower()}_{tab2.lower()}_button", visible=False, container=False)
-        elms[tab1][tab2]['state'].click(
-            fn=getattr(globals()[f"FilerGroup{tab1}"], f"state_{tab2.lower()}"),
-            inputs=[elms[tab1][tab2]['title']],
-            outputs=[out_html],
-        )
+    # if tab1 == 'Hypernetworks':
+    #     elms[tab1][tab2]['title'] = gr.Text(elem_id=f"{tab1.lower()}_{tab2.lower()}_title", visible=False, container=False)
+    #     elms[tab1][tab2]['state'] = gr.Button(elem_id=f"state_{tab1.lower()}_{tab2.lower()}_button", visible=False, container=False)
+    #     elms[tab1][tab2]['state'].click(
+    #         fn=getattr(globals()[f"FilerGroup{tab1}"], f"state_{tab2.lower()}"),
+    #         inputs=[elms[tab1][tab2]['title']],
+    #         outputs=[out_html],
+    #     )
 
     elms[tab1][tab2]['copy'].click(
         fn=getattr(globals()[f"FilerGroup{tab1}"], f"copy_{tab2.lower()}"),
