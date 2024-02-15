@@ -26,7 +26,7 @@ def js_only():
 def check_backup_dir():
     settings = filer_models.load_settings()
     html = ''
-    if not settings['backup_dir']:
+    if not settings['backup_default_dir']:
         html = 'First open the Settings tab and enter the backup directory'
     return html
 
@@ -36,10 +36,10 @@ def save_settings(*input_settings):
     return [
         # filer_models.save_settings(*input_settings),
         filer_models.load_backup_dir('checkpoints'),
-        filer_models.load_backup_dir('embeddings'),
+        # filer_models.load_backup_dir('embeddings'),
         # filer_models.load_backup_dir('dreambooths'),
         filer_models.load_backup_dir('loras'),
-        filer_models.load_backup_dir('hypernetworks'),
+        # filer_models.load_backup_dir('hypernetworks'),
         filer_models.load_backup_dir('controlnet'),
         filer_models.load_backup_dir('extensions'),
         filer_models.load_backup_dir('images'),
@@ -229,7 +229,7 @@ def ui_set(tab1, tab2):
         elms[tab1][tab2]['move'] = gr.Button("Move")
         elms[tab1][tab2]['delete'] = gr.Button("Delete")
         # elms[tab1][tab2]['download'] = gr.Button("Download")
-        # elms[tab1][tab2]['download'] = gr.Button("Download")
+
     with gr.Row():
         #* ファイル一覧
         elms[tab1][tab2]['table'] = gr.HTML("Please push Reload button.")
@@ -345,13 +345,13 @@ def on_ui_tabs():
                     #     ui_set("Checkpoints", "Download")
                     # with gr.TabItem("Download"):
                     #     ui_set("Checkpoints", "Download")
-            with gr.TabItem("Embeddings"):
-                ui_dir("Embeddings")
-                with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("Embeddings", "Active")
-                    with gr.TabItem("Backup"):
-                        ui_set("Embeddings", "Backup")
+            # with gr.TabItem("Embeddings"):
+            #     ui_dir("Embeddings")
+            #     with gr.Tabs() as tabs:
+            #         with gr.TabItem("Active"):
+            #             ui_set("Embeddings", "Active")
+            #         with gr.TabItem("Backup"):
+            #             ui_set("Embeddings", "Backup")
                     # with gr.TabItem("Download"):
                     #     ui_set("Embeddings", "Download")
             # with gr.TabItem("Dreambooths"):
@@ -370,13 +370,13 @@ def on_ui_tabs():
                         ui_set("Loras", "Backup")
                     # with gr.TabItem("Download"):
                     #     ui_set("Loras", "Download")
-            with gr.TabItem("Hypernetworks"):
-                ui_dir("Hypernetworks")
-                with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("Hypernetworks", "Active")
-                    with gr.TabItem("Backup"):
-                        ui_set("Hypernetworks", "Backup")
+            # with gr.TabItem("Hypernetworks"):
+            #     ui_dir("Hypernetworks")
+            #     with gr.Tabs() as tabs:
+            #         with gr.TabItem("Active"):
+            #             ui_set("Hypernetworks", "Active")
+            #         with gr.TabItem("Backup"):
+            #             ui_set("Hypernetworks", "Backup")
                     # with gr.TabItem("Download"):
                     #     ui_set("Hypernetworks", "Download")
             with gr.TabItem("ControlNet"):
@@ -402,35 +402,35 @@ def on_ui_tabs():
                         ui_set("Images", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("Images", "Backup")
-            with gr.TabItem("Files"):
-                files_reload = gr.Button("Reload")
-                files_table = gr.HTML("Please push Reload button.")
-                files_title = gr.Text(elem_id=f"files_title", visible=False, container=False)
-                files_load = gr.Button(elem_id=f"load_files_button", visible=False, container=False)
-                files_download = gr.Button(elem_id=f"download_files_button", visible=False, container=False)
-                files_edit = gr.Textbox(lines=10,interactive=True,label='Loaded File')
-                files_save = gr.Button("Save")
-                files_files = gr.Files(interactive=False)
-                files_reload.click(
-                    fn=FilerGroupFiles._table,
-                    inputs=[],
-                    outputs=[files_table],
-                    )
-                files_load.click(
-                    fn=FilerGroupFiles.load,
-                    inputs=[files_title],
-                    outputs=[files_edit],
-                    )
-                files_save.click(
-                    fn=FilerGroupFiles.save,
-                    inputs=[files_title, files_edit],
-                    outputs=[out_html],
-                    )
-                files_download.click(
-                    fn=FilerGroupFiles.download,
-                    inputs=[files_title],
-                    outputs=[files_files],
-                    )
+            # with gr.TabItem("Files"):
+            #     files_reload = gr.Button("Reload")
+            #     files_table = gr.HTML("Please push Reload button.")
+            #     files_title = gr.Text(elem_id=f"files_title", visible=False, container=False)
+            #     files_load = gr.Button(elem_id=f"load_files_button", visible=False, container=False)
+            #     files_download = gr.Button(elem_id=f"download_files_button", visible=False, container=False)
+            #     files_edit = gr.Textbox(lines=10,interactive=True,label='Loaded File')
+            #     files_save = gr.Button("Save")
+            #     files_files = gr.Files(interactive=False)
+            #     files_reload.click(
+            #         fn=FilerGroupFiles._table,
+            #         inputs=[],
+            #         outputs=[files_table],
+            #         )
+            #     files_load.click(
+            #         fn=FilerGroupFiles.load,
+            #         inputs=[files_title],
+            #         outputs=[files_edit],
+            #         )
+            #     files_save.click(
+            #         fn=FilerGroupFiles.save,
+            #         inputs=[files_title, files_edit],
+            #         outputs=[out_html],
+            #         )
+            #     files_download.click(
+            #         fn=FilerGroupFiles.download,
+            #         inputs=[files_title],
+            #         outputs=[files_files],
+            #         )
             # with gr.TabItem("Infotexts"):
             #     ui_infotexts()
             with gr.TabItem("Settings"):
@@ -442,8 +442,9 @@ def on_ui_tabs():
                         #* labelを使ってしまうと、stable-diffusion-webui/ui-config.json にそのキーで登録され、それ以降 value 初期表示が更新できなくなるため注意
                         settings.append(gr.Textbox(show_label=False, info=k.title(), value=v, interactive=True))
 
-            with gr.TabItem("System"):
-                ui_system()
+            # TODO  Basic で全体の仕様容量も確認できるので、オフにするなら他へ流用
+            # with gr.TabItem("System"):
+            #     ui_system()
 
         apply_settings.click(
             fn=save_settings,
@@ -451,10 +452,10 @@ def on_ui_tabs():
             outputs=[
                 # out_html,                         #* 画面上部に更新結果を表示
                 elms['Checkpoints']['backup_dir'],  #* 各タブの Backup Dir 表示を更新
-                elms['Embeddings']['backup_dir'],
+                # elms['Embeddings']['backup_dir'],
                 # elms['Dreambooths']['backup_dir'],
                 elms['Loras']['backup_dir'],
-                elms['Hypernetworks']['backup_dir'],
+                # elms['Hypernetworks']['backup_dir'],
                 elms['ControlNet']['backup_dir'],
                 elms['Extensions']['backup_dir'],
                 elms['Images']['backup_dir'],

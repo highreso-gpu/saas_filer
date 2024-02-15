@@ -63,6 +63,7 @@ def print_about_basic():
         except:
             rs.append('Memory: unknown')
 
+    #* 全体の仕様容量
     try:
         total, used, free = shutil.disk_usage(os.path.abspath('.'))
         rs.append(f"Disk: {gib(total - free)} / {gib(total)} GiB")
