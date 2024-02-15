@@ -18,6 +18,7 @@ default_settings = {
     'backup_loras_dir': '',
     # 'backup_hypernetworks_dir': '',
     'backup_controlnet_dir': '',
+    'backup_vae_dir': '',
     'backup_extensions_dir': '',
     'backup_images_dir': '',
     }

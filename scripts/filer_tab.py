@@ -8,14 +8,15 @@ from modules import script_callbacks, sd_models, shared
 import filer.models as filer_models
 import filer.actions as filer_actions
 from filer.checkpoints import FilerGroupCheckpoints
-from filer.embeddings import FilerGroupEmbeddings
+# from filer.embeddings import FilerGroupEmbeddings
 # from filer.dreambooths import FilerGroupDreambooths
 from filer.loras import FilerGroupLoras
-from filer.hypernetworks import FilerGroupHypernetworks
+# from filer.hypernetworks import FilerGroupHypernetworks
 from filer.controlnet import FilerGroupControlNet
+from filer.vae import FilerGroupVAE
 from filer.extensions import FilerGroupExtensions
 from filer.images import FilerGroupImages
-from filer.files import FilerGroupFiles
+# from filer.files import FilerGroupFiles
 import filer.imodels as infotexts_models
 import filer.iactions as infotexts_actions
 import filer.system as about_system
@@ -41,6 +42,7 @@ def save_settings(*input_settings):
         filer_models.load_backup_dir('loras'),
         # filer_models.load_backup_dir('hypernetworks'),
         filer_models.load_backup_dir('controlnet'),
+        filer_models.load_backup_dir('vae'),
         filer_models.load_backup_dir('extensions'),
         filer_models.load_backup_dir('images'),
         ]
@@ -388,6 +390,13 @@ def on_ui_tabs():
                         ui_set("ControlNet", "Backup")
                     # with gr.TabItem("Download"):
                     #     ui_set("ControlNet", "Download")
+            with gr.TabItem("VAE"):
+                ui_dir("VAE")
+                with gr.Tabs() as tabs:
+                    with gr.TabItem("Active"):
+                        ui_set("VAE", "Active")
+                    with gr.TabItem("Backup"):
+                        ui_set("VAE", "Backup")
             with gr.TabItem("Extensions"):
                 ui_dir("Extensions")
                 with gr.Tabs() as tabs:
@@ -457,6 +466,7 @@ def on_ui_tabs():
                 elms['Loras']['backup_dir'],
                 # elms['Hypernetworks']['backup_dir'],
                 elms['ControlNet']['backup_dir'],
+                elms['VAE']['backup_dir'],
                 elms['Extensions']['backup_dir'],
                 elms['Images']['backup_dir'],
                 ])
