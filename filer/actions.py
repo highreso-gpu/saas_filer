@@ -19,7 +19,7 @@ def calc_sha256(filenames, filelist):
 
 def copy(filenames, filelist, dst_dir):
     if not dst_dir:
-        raise ValueError('Please Input Backup Directory')
+        raise ValueError('Please Input Destination Directory')
         return
 
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
@@ -49,7 +49,7 @@ def copy(filenames, filelist, dst_dir):
 
 def move(filenames, filelist, dst_dir):
     if not dst_dir:
-        raise ValueError('Please Input Backup Directory')
+        raise ValueError('Please Input Destination Directory')
         return
 
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
@@ -67,11 +67,11 @@ def move(filenames, filelist, dst_dir):
                 shutil.move(r['filepath'] + '.sha256', dst_path + '.sha256')
             except:
                 pass
-            if (os.path.exists(os.path.splitext(r['filepath'])[0] + '.yaml')):
-                try:
-                    shutil.move(os.path.splitext(r['filepath'])[0] + '.yaml', os.path.splitext(dst_path)[0] + '.yaml')
-                except:
-                    pass
+        if (os.path.exists(os.path.splitext(r['filepath'])[0] + '.yaml')):
+            try:
+                shutil.move(os.path.splitext(r['filepath'])[0] + '.yaml', os.path.splitext(dst_path)[0] + '.yaml')
+            except:
+                pass
     print("Move Done!")
 
 def delete(filenames, list):

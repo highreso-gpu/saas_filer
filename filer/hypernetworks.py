@@ -22,6 +22,7 @@ class FilerGroupHypernetworks(FilerGroupBase):
 
     @classmethod
     def state(cls, tab2, filename):
+        # pytorch モデルパラメータの読み込み
 
         filepath = os.path.join(cls.get_dir(tab2), filename)
 
