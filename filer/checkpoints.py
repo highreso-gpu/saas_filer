@@ -17,14 +17,12 @@ class FilerGroupCheckpoints(FilerGroupBase):
         return shared.cmd_opts.ckpt_dir or sd_models.model_path
 
     @classmethod
-    #* 拡張子を限定しているがリスト表示のみ（実際には指定パスにその他の拡張子のファイルも保存されている）
-    # TODO ⇒ 拡張子限定するなら統一したい、ストレージ管理に弊害が出そう
     def _get_list(cls, dir):
         rs = []
         for filedir, subdirs, filenames in os.walk(dir):
             for filename in filenames:
-                if not filename.endswith('.ckpt') and not filename.endswith('.safetensors') and not filename.endswith('.vae.pt'):
-                    continue
+                # if not filename.endswith('.ckpt') and not filename.endswith('.safetensors') and not filename.endswith('.vae.pt'):
+                #     continue
 
                 r = {}
                 r['filename'] = filename

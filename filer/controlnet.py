@@ -20,7 +20,6 @@ class FilerGroupControlNet(FilerGroupBase):
         rs = []
         for filedir, subdirs, filenames in os.walk(dir):
             for filename in filenames:
-                # TODO 拡張子を限定する必要があるのか確認
                 # if not filename.endswith('.pth') :
                 #     continue
 

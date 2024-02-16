@@ -18,8 +18,8 @@ class FilerGroupLoras(FilerGroupBase):
         rs = []
         for filedir, subdirs, filenames in os.walk(dir):
             for filename in filenames:
-                if not filename.endswith('.pt') and not filename.endswith('.safetensors'):
-                    continue
+                # if not filename.endswith('.pt') and not filename.endswith('.safetensors'):
+                #     continue
 
                 r = {}
                 r['filename'] = filename
