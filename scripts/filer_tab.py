@@ -229,8 +229,8 @@ def ui_set(tab1, tab2):
         #     elms[tab1][tab2]['invokeai'] = gr.Button("Make InvokeAI models.yaml")
         # if tab1 in ['Checkpoints', 'Hypernetworks', 'Loras']:
         #     elms[tab1][tab2]['calc_sha256'] = gr.Button("Calc SHA256")
-        elms[tab1][tab2]['copy'] = gr.Button("Copy")
-        elms[tab1][tab2]['move'] = gr.Button("Move")
+        # elms[tab1][tab2]['copy'] = gr.Button("Copy")
+        # elms[tab1][tab2]['move'] = gr.Button("Move")
         elms[tab1][tab2]['delete'] = gr.Button("Delete")
         # elms[tab1][tab2]['download'] = gr.Button("Download")
 
@@ -307,19 +307,19 @@ def ui_set(tab1, tab2):
     #         outputs=[out_html],
     #     )
 
-    elms[tab1][tab2]['copy'].click(
-        fn=getattr(globals()[f"FilerGroup{tab1}"], f"copy_{tab2.lower()}"),
-        _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
-        inputs=[elms[tab1][tab2]['selected']],
-        outputs=[elms[tab1][tab2]['table']],
-    )
+    # elms[tab1][tab2]['copy'].click(
+    #     fn=getattr(globals()[f"FilerGroup{tab1}"], f"copy_{tab2.lower()}"),
+    #     _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
+    #     inputs=[elms[tab1][tab2]['selected']],
+    #     outputs=[elms[tab1][tab2]['table']],
+    # )
 
-    elms[tab1][tab2]['move'].click(
-        fn=getattr(globals()[f"FilerGroup{tab1}"], f"move_{tab2.lower()}"),
-        _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
-        inputs=[elms[tab1][tab2]['selected']],
-        outputs=[elms[tab1][tab2]['table']],
-    )
+    # elms[tab1][tab2]['move'].click(
+    #     fn=getattr(globals()[f"FilerGroup{tab1}"], f"move_{tab2.lower()}"),
+    #     _js="function(){return rows('"+tab1.lower()+"_"+tab2.lower()+"')}",
+    #     inputs=[elms[tab1][tab2]['selected']],
+    #     outputs=[elms[tab1][tab2]['table']],
+    # )
 
     elms[tab1][tab2]['delete'].click(
         fn=getattr(globals()[f"FilerGroup{tab1}"], f"delete_{tab2.lower()}"),
