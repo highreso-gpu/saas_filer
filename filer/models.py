@@ -19,8 +19,9 @@ default_settings = {
     # 'backup_hypernetworks_dir': '',
     'backup_controlnet_dir': '',
     'backup_vae_dir': '',
-    'backup_extensions_dir': '',
-    'backup_images_dir': '',
+    'backup_other_dir': '',
+    # 'backup_extensions_dir': '',
+    # 'backup_images_dir': '',
     }
 
 #* 全体の設定を取得

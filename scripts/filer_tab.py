@@ -14,8 +14,9 @@ from filer.loras import FilerGroupLoras
 # from filer.hypernetworks import FilerGroupHypernetworks
 from filer.controlnet import FilerGroupControlNet
 from filer.vae import FilerGroupVAE
-from filer.extensions import FilerGroupExtensions
-from filer.images import FilerGroupImages
+from filer.other import FilerGroupOther
+# from filer.extensions import FilerGroupExtensions
+# from filer.images import FilerGroupImages
 # from filer.files import FilerGroupFiles
 import filer.imodels as infotexts_models
 import filer.iactions as infotexts_actions
@@ -43,8 +44,9 @@ def save_settings(*input_settings):
         # filer_models.load_backup_dir('hypernetworks'),
         filer_models.load_backup_dir('controlnet'),
         filer_models.load_backup_dir('vae'),
-        filer_models.load_backup_dir('extensions'),
-        filer_models.load_backup_dir('images'),
+        filer_models.load_backup_dir('other'),
+        # filer_models.load_backup_dir('extensions'),
+        # filer_models.load_backup_dir('images'),
         ]
 
 elms = {}
@@ -397,20 +399,27 @@ def on_ui_tabs():
                         ui_set("VAE", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("VAE", "Backup")
-            with gr.TabItem("Extensions"):
-                ui_dir("Extensions")
+            with gr.TabItem("Other"):
+                ui_dir("Other")
                 with gr.Tabs() as tabs:
                     with gr.TabItem("Active"):
-                        ui_set("Extensions", "Active")
+                        ui_set("Other", "Active")
                     with gr.TabItem("Backup"):
-                        ui_set("Extensions", "Backup")
-            with gr.TabItem("Images"):
-                ui_dir("Images")
-                with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("Images", "Active")
-                    with gr.TabItem("Backup"):
-                        ui_set("Images", "Backup")
+                        ui_set("Other", "Backup")
+            # with gr.TabItem("Extensions"):
+            #     ui_dir("Extensions")
+            #     with gr.Tabs() as tabs:
+            #         with gr.TabItem("Active"):
+            #             ui_set("Extensions", "Active")
+            #         with gr.TabItem("Backup"):
+            #             ui_set("Extensions", "Backup")
+            # with gr.TabItem("Images"):
+            #     ui_dir("Images")
+            #     with gr.Tabs() as tabs:
+            #         with gr.TabItem("Active"):
+            #             ui_set("Images", "Active")
+            #         with gr.TabItem("Backup"):
+            #             ui_set("Images", "Backup")
             # with gr.TabItem("Files"):
             #     files_reload = gr.Button("Reload")
             #     files_table = gr.HTML("Please push Reload button.")
@@ -467,8 +476,9 @@ def on_ui_tabs():
                 # elms['Hypernetworks']['backup_dir'],
                 elms['ControlNet']['backup_dir'],
                 elms['VAE']['backup_dir'],
-                elms['Extensions']['backup_dir'],
-                elms['Images']['backup_dir'],
+                elms['Other']['backup_dir'],
+                # elms['Extensions']['backup_dir'],
+                # elms['Images']['backup_dir'],
                 ])
 
     return (filer, "Filer", "filer"),
