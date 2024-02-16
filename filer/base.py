@@ -135,6 +135,41 @@ class FilerGroupBase:
     def reload_backup(cls):
         return [cls.table_backup(), '']
 
+    # @classmethod
+    # def _table(cls, name, rs):
+    #     pass
+
     @classmethod
-    def _table(cls, name, rs):
-        pass
+    def _table(cls, tab2, rs):
+        name = f"{cls.name}_{tab2}"
+
+        # TODO ここにファイルおよびディレクトリの使用容量を追加で表示したい
+        code = f"""
+        <table>
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>file</th>
+                    <th>download</th>
+                </tr>
+            </thead>
+            <tbody>
+        """
+
+        for r in rs:
+            code += f"""
+                <tr class="filer_{name}_row" data-title="{r['title']}">
+                    <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows('{name}')"></td>
+                    <td class="filer_title">{r['title']}</td>
+                    <td><a href="/file={r['filepath']}" download>
+                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
+                    </a></td>
+                </tr>
+                """
+
+        code += """
+            </tbody>
+        </table>
+        """
+
+        return code

@@ -20,8 +20,9 @@ class FilerGroupVAE(FilerGroupBase):
         rs = []
         for filedir, subdirs, filenames in os.walk(dir):
             for filename in filenames:
-                if not filename.endswith('.pt') and not filename.endswith('.png'):
-                    continue
+                # TODO 拡張子を限定する必要があるのか確認
+                # if not filename.endswith('.pt') and not filename.endswith('.ckpt') and not filename.endswith('.safetensors'):
+                #     continue
 
                 r = {}
                 r['filename'] = filename
@@ -33,38 +34,3 @@ class FilerGroupVAE(FilerGroupBase):
                 rs.append(r)
 
         return rs
-
-    @classmethod
-    def _table(cls, tab2, rs):
-        name = f"{cls.name}_{tab2}"
-        code = f"""
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>Filepath</th>
-                    <th>sha256</th>
-                    <th>download</th>
-                </tr>
-            </thead>
-            <tbody>
-        """
-
-        for r in rs:
-            code += f"""
-                <tr class="filer_{name}_row" data-title="{r['title']}">
-                    <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows_{name}()"></td>
-                    <td class="filer_title">{r['title']}</td>
-                    <td class="filer_sha256">{r['sha256']}</td>
-                    <td><a href="/file={r['filepath']}" download>
-                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
-                    </a></td>
-                </tr>
-                """
-
-        code += """
-            </tbody>
-        </table>
-        """
-
-        return code

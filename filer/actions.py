@@ -113,6 +113,7 @@ def download(filenames, filelist):
     return files
 
 def upload(files, dir, is_zip = False):
+    # is_zip は filer class 毎に設定されており、True なら zip しか扱うことができない
     #* 一旦 tmp へアップロード
     # tqdm.tqdm がプログレスバー
     for file in tqdm.tqdm(files):
