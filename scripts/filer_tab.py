@@ -1,3 +1,4 @@
+import os
 import gradio as gr
 
 from modules import script_callbacks, sd_models, shared
@@ -25,14 +26,12 @@ def check_backup_dir():
 def save_settings(*input_settings):
     filer_models.save_settings(*input_settings),    # config.json 更新（なければ作成）
 
-    return [
-        # filer_models.save_settings(*input_settings),
-        filer_models.load_backup_dir('checkpoints'),
-        filer_models.load_backup_dir('loras'),
-        filer_models.load_backup_dir('controlnet'),
-        filer_models.load_backup_dir('vae'),
-        filer_models.load_backup_dir('other'),
-        ]
+    #* それぞれの保存先設定を絶対パスで返す
+    dirs = ['checkpoints', 'loras', 'controlnet', 'vae', 'other']
+    result_list = [os.path.join(os.path.abspath("."), filer_models.load_backup_dir(x)) for x in dirs]
+    print(result_list)
+
+    return result_list
 
 elms = {}
 
@@ -64,8 +63,8 @@ def ui_dir(tab1):
         elms[tab1] = {}
 
     with gr.Row():
-        # elms[tab1]['active_dir'] = gr.Textbox(show_label=False, info="Active Dir", value=globals()[f"FilerGroup{tab1}"].get_active_dir(), interactive=False)
-        elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Backup Dir", value=filer_models.load_backup_dir(tab1.lower()), interactive=False)
+        upload_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
+        elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Upload Path", value=upload_path, interactive=False)
 
 def ui_set(tab1, tab2):
     """
@@ -162,13 +161,18 @@ def on_ui_tabs():
                     with gr.TabItem("Backup"):
                         ui_set("Other", "Backup")
             with gr.TabItem("Settings"):
-                apply_settings = gr.Button("Apply settings")
+                with gr.Row():
+                    gr.Textbox(show_label=False, info='Base_Dir', value=os.path.abspath(".") + os.sep, interactive=False)
+                with gr.Row():
+                    gr.HTML("Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます。")
                 settings = []
                 for k, v in filer_models.load_settings().items():
                     print(k, v)
                     with gr.Row():
                         #* labelを使ってしまうと、stable-diffusion-webui/ui-config.json にそのキーで登録され、それ以降 value 初期表示が更新できなくなるため注意
                         settings.append(gr.Textbox(show_label=False, info=k.title(), value=v, interactive=True))
+                with gr.Row():
+                    apply_settings = gr.Button("Apply settings")                
 
             # TODO  Basic で全体の仕様容量も確認できるので、オフにするなら他へ流用
             # with gr.TabItem("System"):

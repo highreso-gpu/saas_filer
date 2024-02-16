@@ -64,11 +64,32 @@ def save_settings(*input_settings):
             data = json.load(f)
     i = 0
     for k in default_settings.keys():
+        # *保存先のバリデーション (stable-diffusion-webui のプロジェクトディレクトリ以下であるように制限)
+        # 全て通らなければ何も保存されない
+        if not is_within_base_path(os.path.abspath("."), input_settings[i]):
+            print("Error: The path is not within the base path.")
+            print(f"(the value being assigned to key({k}) is '{input_settings[i]}')")
+            return
+
         data.update({k: input_settings[i]})
         i += 1
     if not os.path.exists(os.path.dirname(filepath)):
         os.makedirs(os.path.dirname(filepath))
     with open(filepath, "w") as f:
         json.dump(data, f)
+        print("settings saved.")
     # return json.dumps(data)
     return
+
+def is_within_base_path(base_path: str, user_path: str) -> bool:
+    """
+    ユーザーが指定したパスがBase Path内にあるかどうかを判断する。
+
+    :param base_path: Base Pathの絶対パス
+    :param user_path: ユーザーが指定したパス
+    :return: ユーザーが指定したパスがBase Path内にある場合はTrue、そうでない場合はFalse
+    """
+    abs_base_path = os.path.abspath(base_path)
+    abs_user_path = os.path.abspath(user_path)
+    
+    return abs_user_path.startswith(abs_base_path)

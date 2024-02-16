@@ -114,6 +114,10 @@ def download(filenames, filelist):
 
 def upload(files, dir, is_zip = False):
     # is_zip は filer class 毎に設定されており、True なら zip しか扱うことができない
+
+    #* Base Dir との結合
+    dst_dir = os.path.join(os.path.abspath("."), dir)
+
     #* 一旦 tmp へアップロード
     # tqdm.tqdm がプログレスバー
     for file in tqdm.tqdm(files):
@@ -127,13 +131,13 @@ def upload(files, dir, is_zip = False):
             #* 文字数制限こっちも
             # filename = tmp_stem[:-8]
             filename = tmp_stem
-            filepath = os.path.join(dir, filename)
+            filepath = os.path.join(dst_dir, filename)
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
                 continue
             shutil.unpack_archive(file.name, filepath)
             # imagesの時は一覧への追加を試みる
-            if not dir:
+            if not dst_dir:
                 filer_images.list_append(filename)
         else:
             #* 文字数制限
@@ -141,7 +145,7 @@ def upload(files, dir, is_zip = False):
             #* ⇒ ランダム文字列の桁数分っぽいが、元のファイル名が短くなるということは付与されていない？
             # filename = tmp_stem[:-8] + ext
             filename = tmp_stem + ext
-            filepath = os.path.join(dir, filename)
+            filepath = os.path.join(dst_dir, filename)
 
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
