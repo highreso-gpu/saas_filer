@@ -184,7 +184,7 @@ def ui_dir(tab1):
         elms[tab1] = {}
 
     with gr.Row():
-        elms[tab1]['active_dir'] = gr.Textbox(show_label=False, info="Active Dir", value=globals()[f"FilerGroup{tab1}"].get_active_dir(), interactive=False)
+        # elms[tab1]['active_dir'] = gr.Textbox(show_label=False, info="Active Dir", value=globals()[f"FilerGroup{tab1}"].get_active_dir(), interactive=False)
         elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Backup Dir", value=filer_models.load_backup_dir(tab1.lower()), interactive=False)
 
 def ui_set(tab1, tab2):
@@ -266,21 +266,21 @@ def ui_set(tab1, tab2):
         # outputs=[elms[tab1][tab2]['table']],
     )
 
-    if tab1 in ['Checkpoints'] and tab2 == 'Active':
-        elms[tab1][tab2]['reload'].click(
-            fn=getattr(globals()[f"FilerGroup{tab1}"], f"reload_{tab2.lower()}"),
-            _js=f"reload_{tab1.lower()}",
-            inputs=[],
-            outputs=[elms[tab1][tab2]['table']],
-        )
+    # if tab1 in ['Checkpoints'] and tab2 == 'Active':
+    #     elms[tab1][tab2]['reload'].click(
+    #         fn=getattr(globals()[f"FilerGroup{tab1}"], f"reload_{tab2.lower()}"),
+    #         _js=f"reload_{tab1.lower()}",
+    #         inputs=[],
+    #         outputs=[elms[tab1][tab2]['table']],
+    #     )
     # TODO これを ui_set() 時にも呼びたい
-    else:
-        elms[tab1][tab2]['reload'].click(
-            fn=getattr(globals()[f"FilerGroup{tab1}"], f"reload_{tab2.lower()}"),
-            # every=1, # 1秒ごとにリロードされるが、一度手動でリロードしないことには始まらない
-            inputs=[],
-            outputs=[elms[tab1][tab2]['table'], elms[tab1][tab2]['selected']],
-        )
+    # else:
+    elms[tab1][tab2]['reload'].click(
+        fn=getattr(globals()[f"FilerGroup{tab1}"], f"reload_{tab2.lower()}"),
+        # every=1, # 1秒ごとにリロードされるが、一度手動でリロードしないことには始まらない
+        inputs=[],
+        outputs=[elms[tab1][tab2]['table'], elms[tab1][tab2]['selected']],
+    )
 
     # if tab1 == 'Checkpoints':
     #     elms[tab1][tab2]['invokeai'].click(
@@ -341,8 +341,8 @@ def on_ui_tabs():
             with gr.TabItem("Checkpoints"):
                 ui_dir("Checkpoints")
                 with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("Checkpoints", "Active")
+                    # with gr.TabItem("Active"):
+                    #     ui_set("Checkpoints", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("Checkpoints", "Backup")
                     # with gr.TabItem("Download"):
@@ -368,8 +368,8 @@ def on_ui_tabs():
             with gr.TabItem("Loras"):
                 ui_dir("Loras")
                 with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("Loras", "Active")
+                    # with gr.TabItem("Active"):
+                    #     ui_set("Loras", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("Loras", "Backup")
                     # with gr.TabItem("Download"):
@@ -386,8 +386,8 @@ def on_ui_tabs():
             with gr.TabItem("ControlNet"):
                 ui_dir("ControlNet")
                 with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("ControlNet", "Active")
+                    # with gr.TabItem("Active"):
+                    #     ui_set("ControlNet", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("ControlNet", "Backup")
                     # with gr.TabItem("Download"):
@@ -395,15 +395,15 @@ def on_ui_tabs():
             with gr.TabItem("VAE"):
                 ui_dir("VAE")
                 with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("VAE", "Active")
+                    # with gr.TabItem("Active"):
+                    #     ui_set("VAE", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("VAE", "Backup")
             with gr.TabItem("Other"):
                 ui_dir("Other")
                 with gr.Tabs() as tabs:
-                    with gr.TabItem("Active"):
-                        ui_set("Other", "Active")
+                    # with gr.TabItem("Active"):
+                    #     ui_set("Other", "Active")
                     with gr.TabItem("Backup"):
                         ui_set("Other", "Backup")
             # with gr.TabItem("Extensions"):
