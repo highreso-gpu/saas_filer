@@ -6,8 +6,8 @@ from .base import FilerGroupBase
 from . import models as filer_models
 from . import actions as filer_actions
 
-class FilerGroupLoRA(FilerGroupBase):
-    name = 'lora'
+class FilerGroupLoras(FilerGroupBase):
+    name = 'loras'
 
     @classmethod
     def get_active_dir(cls):
