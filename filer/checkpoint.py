@@ -9,8 +9,8 @@ from .base import FilerGroupBase
 from . import models as filer_models
 from . import actions as filer_actions
 
-class FilerGroupCheckpoints(FilerGroupBase):
-    name = 'checkpoints'
+class FilerGroupCheckpoint(FilerGroupBase):
+    name = 'checkpoint'
 
     @classmethod
     def get_active_dir(cls):

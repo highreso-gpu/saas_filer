@@ -12,16 +12,11 @@ Backup Dir の読込と更新
 
 default_settings = {
     'backup_default_dir': '',
-    'backup_checkpoints_dir': '',
-    # 'backup_embeddings_dir': '',
-    # 'backup_dreambooths_dir': '',
-    'backup_loras_dir': '',
-    # 'backup_hypernetworks_dir': '',
+    'backup_checkpoint_dir': '',
+    'backup_lora_dir': '',
     'backup_controlnet_dir': '',
     'backup_vae_dir': '',
     'backup_other_dir': '',
-    # 'backup_extensions_dir': '',
-    # 'backup_images_dir': '',
     }
 
 #* 全体の設定を取得
