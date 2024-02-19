@@ -36,7 +36,7 @@ def save_settings(*input_settings: List[str]) -> List[str]:
         html_message = '<h5>保存先を更新しました<h5>'
     else:
         html_message = '<h6 style="color: red">' \
-            '保存に失敗しました<br>' \
+            '保存先の更新に失敗しました<br>' \
             '※ Base_Dir 以外のディレクトリには設定できません' \
             '</h6>'
     result_list.append(html_message)
@@ -183,7 +183,7 @@ def on_ui_tabs():
                         #* labelを使ってしまうと、stable-diffusion-webui/ui-config.json にそのキーで登録され、それ以降 value 初期表示が更新できなくなるため注意
                         settings.append(gr.Textbox(show_label=False, info=k.title(), value=v, interactive=True))
                 with gr.Row():
-                    apply_settings = gr.Button("Save Settings")
+                    apply_settings = gr.Button("Apply settings")
                 with gr.Row():
                     result_message = gr.HTML("")
 
