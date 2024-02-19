@@ -55,7 +55,7 @@ def load_backup_dir(name):
 
     return dir
 
-def save_settings(*input_settings):
+def save_settings(*input_settings: list) -> bool:
     p = pathlib.Path(__file__).parts[-4:-2]
     filepath = os.path.join(p[0], p[1], 'config', 'config.json')
     data = {}
@@ -69,7 +69,7 @@ def save_settings(*input_settings):
         if not is_within_base_path(os.path.abspath("."), input_settings[i]):
             print("Error: The path is not within the base path.")
             print(f"(the value being assigned to key({k}) is '{input_settings[i]}')")
-            return
+            return False
 
         data.update({k: input_settings[i]})
         i += 1
@@ -79,7 +79,7 @@ def save_settings(*input_settings):
         json.dump(data, f)
         print("settings saved.")
     # return json.dumps(data)
-    return
+    return True
 
 def is_within_base_path(base_path: str, user_path: str) -> bool:
     """

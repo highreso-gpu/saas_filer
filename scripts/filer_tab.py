@@ -1,4 +1,5 @@
 import os
+from typing import List
 import gradio as gr
 
 from modules import script_callbacks, sd_models, shared
@@ -23,14 +24,24 @@ def check_backup_dir():
         html = 'First open the Settings tab and enter the backup directory'
     return html
 
-def save_settings(*input_settings):
-    filer_models.save_settings(*input_settings),    # config.json 更新（なければ作成）
+def save_settings(*input_settings: List[str]) -> List[str]:
+    result = filer_models.save_settings(*input_settings)    # config.json 更新（なければ作成）
 
-    #* それぞれの保存先設定を絶対パスで返す
+    #* それぞれの保存先設定を絶対パスへ変換
     dirs = ['checkpoints', 'loras', 'controlnet', 'vae', 'other']
     result_list = [os.path.join(os.path.abspath("."), filer_models.load_backup_dir(x)) for x in dirs]
-    print(result_list)
 
+    #* 保存の成否を HTML 用に追加
+    if result:
+        html_message = '<h5>保存先を更新しました<h5>'
+    else:
+        html_message = '<h6 style="color: red">' \
+            '保存に失敗しました<br>' \
+            '※ Base_Dir 以外のディレクトリには設定できません' \
+            '</h6>'
+    result_list.append(html_message)
+    
+    print(result_list)
     return result_list
 
 elms = {}
@@ -164,7 +175,7 @@ def on_ui_tabs():
                 with gr.Row():
                     gr.Textbox(show_label=False, info='Base_Dir', value=os.path.abspath(".") + os.sep, interactive=False)
                 with gr.Row():
-                    gr.HTML("Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます。")
+                    gr.HTML("Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます（Base_Dir は固定です）")
                 settings = []
                 for k, v in filer_models.load_settings().items():
                     print(k, v)
@@ -172,7 +183,9 @@ def on_ui_tabs():
                         #* labelを使ってしまうと、stable-diffusion-webui/ui-config.json にそのキーで登録され、それ以降 value 初期表示が更新できなくなるため注意
                         settings.append(gr.Textbox(show_label=False, info=k.title(), value=v, interactive=True))
                 with gr.Row():
-                    apply_settings = gr.Button("Apply settings")                
+                    apply_settings = gr.Button("Save Settings")
+                with gr.Row():
+                    result_message = gr.HTML("")
 
             # TODO  Basic で全体の仕様容量も確認できるので、オフにするなら他へ流用
             # with gr.TabItem("System"):
@@ -182,12 +195,14 @@ def on_ui_tabs():
             fn=save_settings,
             inputs=settings,
             outputs=[
-                # out_html,                         #* 画面上部に更新結果を表示
-                elms['Checkpoints']['backup_dir'],  #* 各タブの Backup Dir 表示を更新
+                # 各タブの Backup Dir 表示を更新
+                elms['Checkpoints']['backup_dir'],
                 elms['Loras']['backup_dir'],
                 elms['ControlNet']['backup_dir'],
                 elms['VAE']['backup_dir'],
                 elms['Other']['backup_dir'],
+                # save_settings の成否
+                result_message,
                 ])
 
     return (filer, "Filer", "filer"),
