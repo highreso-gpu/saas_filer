@@ -75,7 +75,7 @@ def ui_dir(tab1):
 
     with gr.Row():
         upload_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
-        elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Upload Path", value=upload_path, interactive=False)
+        elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Target Path", value=upload_path, interactive=False)
 
 def ui_set(tab1, tab2):
     """
