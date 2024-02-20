@@ -37,3 +37,10 @@ input[type="checkbox"] {
     text-align: center;
     color: #fff; /* チェックマークの色 */
   }
+
+  .dir_usage {
+    text-align: right;
+    padding-right: 1.5rem;
+    font-size: 1.0em;
+    font-weight: bold;
+  } 

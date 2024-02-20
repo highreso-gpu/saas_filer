@@ -1,4 +1,5 @@
 import os
+import traceback
 import pathlib
 import yaml
 import torch
@@ -136,15 +137,39 @@ class FilerGroupBase:
         return [cls.table_backup(), '']
 
     @classmethod
-    def get_filesize_kilobytes(cls, filepath: str) -> str:
+    def convert_to_kilobytes(cls, filesize: int) -> str:
         """
-        ファイルサイズをカンマありの KB 単位で取得
+        ファイルサイズをカンマありの KB 単位へ
+        変換
         小数点第2位まで表示（第3位を四捨五入）
         """
-        filesize = os.path.getsize(filepath)
         kilobytes = round(filesize / 1024, 2)
-
         return "{:,.2f}".format(kilobytes)
+
+    @classmethod
+    def get_filesize_kilobytes(cls, filepath: str) -> str:
+        """パスからファイルサイズを KB 単位で取得"""
+        filesize = os.path.getsize(filepath)
+        return cls.convert_to_kilobytes(filesize)
+    
+    @classmethod
+    def get_directory_size(cls, path: str) -> int:
+        """path 以下のディレクトリの使用容量を再帰的に集計して取得"""
+        total_size = 0
+        try:
+            # 【確認用】手動で OSError を発生
+            # os.path.getsize("test/path/noexist.txt")
+
+            for dirpath, dirnames, filenames in os.walk(path):
+                for filename in filenames:
+                    filepath = os.path.join(dirpath, filename)  
+                    total_size += os.path.getsize(filepath)
+        except OSError as e:
+            print("-------------------------------------------------------------------------------------------------------------------")
+            print(f"An error occurred in function {traceback.extract_tb(e.__traceback__)[0][2]}: {e}")
+            print("-------------------------------------------------------------------------------------------------------------------")
+
+        return total_size
 
     # @classmethod
     # def _table(cls, name, rs):
@@ -153,8 +178,11 @@ class FilerGroupBase:
     @classmethod
     def _table(cls, tab2, rs):
         name = f"{cls.name}_{tab2}"
+        # directoryのサイズを取得
+        dir_path = cls.get_dir(tab2)
+        dir_size = cls.get_directory_size(dir_path)
+        dir_size_kilo = cls.convert_to_kilobytes(dir_size)
 
-        # TODO ここにディレクトリの使用容量を追加で表示したい
         code = f"""
         <table>
             <thead>
@@ -180,9 +208,10 @@ class FilerGroupBase:
                 </tr>
                 """
 
-        code += """
+        code += f"""
             </tbody>
         </table>
+        <div class="dir_usage">Total Disk Usage of Target Path: {dir_size_kilo} KB</div>
         """
 
         return code

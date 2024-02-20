@@ -74,8 +74,8 @@ def ui_dir(tab1):
         elms[tab1] = {}
 
     with gr.Row():
-        upload_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
-        elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Target Path", value=upload_path, interactive=False)
+        target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
+        elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Target Path", value=target_path, interactive=False)
 
 def ui_set(tab1, tab2):
     """
@@ -187,7 +187,7 @@ def on_ui_tabs():
                 with gr.Row():
                     result_message = gr.HTML("")
 
-            # TODO  Basic で全体の仕様容量も確認できるので、オフにするなら他へ流用
+            # TODO  Basic で全体の使用容量も確認できるので、オフにするなら他へ流用
             # with gr.TabItem("System"):
             #     ui_system()
 
