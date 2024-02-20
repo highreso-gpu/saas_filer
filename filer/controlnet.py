@@ -7,7 +7,7 @@ from . import models as filer_models
 from . import actions as filer_actions
 
 class FilerGroupControlNet(FilerGroupBase):
-    name = 'contolnet'
+    name = 'controlnet'
 
     @classmethod
     def get_active_dir(cls):
