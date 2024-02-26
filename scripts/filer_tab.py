@@ -10,8 +10,6 @@ from filer.lora import FilerGroupLora
 from filer.controlnet import FilerGroupControlNet
 from filer.vae import FilerGroupVAE
 from filer.other import FilerGroupOther
-import filer.imodels as infotexts_models
-import filer.iactions as infotexts_actions
 import filer.system as about_system
 
 def js_only():
