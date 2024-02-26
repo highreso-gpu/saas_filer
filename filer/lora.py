@@ -6,12 +6,12 @@ from .base import FilerGroupBase
 from . import models as filer_models
 from . import actions as filer_actions
 
-class FilerGroupLoras(FilerGroupBase):
-    name = 'loras'
+class FilerGroupLora(FilerGroupBase):
+    name = 'lora'
 
     @classmethod
     def get_active_dir(cls):
-        return os.path.abspath(shared.cmd_opts.lora_dir)
+        return os.path.abspath(shared.cmd_opts.loras_dir)
 
     @classmethod
     def _get_list(cls, dir):

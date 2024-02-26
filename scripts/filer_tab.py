@@ -6,7 +6,7 @@ from modules import script_callbacks, sd_models, shared
 import filer.models as filer_models
 import filer.actions as filer_actions
 from filer.checkpoints import FilerGroupCheckpoints
-from filer.loras import FilerGroupLoras
+from filer.lora import FilerGroupLora
 from filer.controlnet import FilerGroupControlNet
 from filer.vae import FilerGroupVAE
 from filer.other import FilerGroupOther
@@ -28,7 +28,7 @@ def save_settings(*input_settings: List[str]) -> List[str]:
     result = filer_models.save_settings(*input_settings)    # config.json 更新（なければ作成）
 
     #* それぞれの保存先設定を絶対パスへ変換
-    dirs = ['checkpoints', 'loras', 'controlnet', 'vae', 'other']
+    dirs = ['checkpoints', 'lora', 'controlnet', 'vae', 'other']
     result_list = [os.path.join(os.path.abspath("."), filer_models.load_backup_dir(x)) for x in dirs]
 
     #* 保存の成否を HTML 用に追加
@@ -155,11 +155,11 @@ def on_ui_tabs():
                 with gr.Tabs() as tabs:
                     with gr.TabItem("Backup"):
                         ui_set("Checkpoints", "Backup")
-            with gr.TabItem("Loras"):
-                ui_dir("Loras")
+            with gr.TabItem("Lora"):
+                ui_dir("Lora")
                 with gr.Tabs() as tabs:
                     with gr.TabItem("Backup"):
-                        ui_set("Loras", "Backup")
+                        ui_set("Lora", "Backup")
             with gr.TabItem("ControlNet"):
                 ui_dir("ControlNet")
                 with gr.Tabs() as tabs:
@@ -201,7 +201,7 @@ def on_ui_tabs():
             outputs=[
                 # 各タブの Backup Dir 表示を更新
                 elms['Checkpoints']['backup_dir'],
-                elms['Loras']['backup_dir'],
+                elms['Lora']['backup_dir'],
                 elms['ControlNet']['backup_dir'],
                 elms['VAE']['backup_dir'],
                 elms['Other']['backup_dir'],

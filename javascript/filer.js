@@ -1,7 +1,7 @@
 const FLASK_HOST = "http://127.0.0.1:5000"
 const xhrObjects = {
     checkpoints: new XMLHttpRequest(),
-    loras: new XMLHttpRequest(),
+    lora: new XMLHttpRequest(),
     controlnet: new XMLHttpRequest(),
     vae: new XMLHttpRequest(),
     other: new XMLHttpRequest()
