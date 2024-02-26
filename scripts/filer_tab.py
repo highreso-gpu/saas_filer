@@ -113,10 +113,10 @@ def ui_set(tab1, tab2):
         html_content = f"""
             <h2>File Upload</h2>
             <div class="uploadArea">
-                <input type="file" id="fileUpload_{tab1.lower()}" name="fileUpload_{tab1.lower()}">
+                <input type="file" class=fileInput id="fileInput_{tab1.lower()}" name="fileInput_{tab1.lower()}">
                 <div>
                     <button class="btn-like-bs btn-like-bs-primary" id="uploadButton_{tab1.lower()}" onclick="uploadFile('{tab1.lower()}', '{target_path}')">Upload</button>
-                    <button class="btn-like-bs btn-like-bs-dark" id="cancelButton_{tab1.lower()}" onclick="cancelUpload('{tab1.lower()}')">Cancel</button>
+                    <button class="btn-like-bs btn-like-bs-danger" id="cancelButton_{tab1.lower()}" disabled onclick="cancelUpload('{tab1.lower()}')">Cancel</button>
                 </div>
             <div>
             <div class="uploadAreaStatus">

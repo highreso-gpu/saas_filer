@@ -70,12 +70,12 @@ input[type="checkbox"]:checked::before {
   background: lightgray;
 }
 
-  /* (Chrome, Safari, Opera) 信仰している部分 */
+  /* (Chrome, Safari, Opera) 進行している部分 */
 .uploadAreaStatus progress::-webkit-progress-value {
   border-radius: 0.6rem;
   background: #0075ff;
 }
-  /* (Firefox) 信仰している部分 */
+  /* (Firefox) 進行している部分 */
 .uploadAreaStatus progress::-moz-progress-bar {
   border-radius: 0.6rem;
   background: #0075ff;
@@ -88,6 +88,11 @@ input[type="checkbox"]:checked::before {
 
 .hidden {
   display: none;
+}
+
+.fileInput:disabled {
+  background: dimgray;
+  border-radius: 0.3rem;
 }
 
 /* Bootstrap Button のようなスタイル */
@@ -104,16 +109,34 @@ input[type="checkbox"]:checked::before {
   border-radius: .25rem;
 }
 
+.btn-like-bs:disabled {
+  color: #fff;
+  background: dimgray;
+  border-radius: 0.3rem;
+}
+
 .btn-like-bs-primary {
   color: #fff;
   background-color: #007bff;
   transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.btn-like-bs-primary:hover {
+.btn-like-bs-primary:not(:disabled):hover {
   color: #fff;
   background-color: #0069d9;
   border-color: #0056b3;
+}
+
+.btn-like-bs-danger {
+  color: #fff;
+  background-color: #dc3545;
+  transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
+}
+
+.btn-like-bs-danger:not(:disabled):hover {
+  color: #fff;
+  background-color: #c82333;
+  border-color: #bd2130;
 }
 
 .btn-like-bs-dark {
@@ -122,7 +145,7 @@ input[type="checkbox"]:checked::before {
   transition: color .15s ease-in-out, background-color .15s ease-in-out, border-color .15s ease-in-out, box-shadow .15s ease-in-out;
 }
 
-.btn-like-bs-dark:hover {
+.btn-like-bs-dark:not(:disabled):hover {
   color: #fff;
   background-color: #23272b;
   border-color: #1d2124;
