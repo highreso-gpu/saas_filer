@@ -106,21 +106,41 @@ def ui_set(tab1, tab2):
         #* ファイル一覧
         elms[tab1][tab2]['table'] = gr.HTML("Please push Reload button.")
         #* type: <class 'gradio.components.html.HTML'>
-    with gr.Row():
-        elms[tab1][tab2]['files'] = gr.Files(interactive=True) #* short cut of [file_count="multiple"]
+    # with gr.Row():
+    #     elms[tab1][tab2]['files'] = gr.Files(interactive=True) #* short cut of [file_count="multiple"]
         
-    # TODO 'reload'ボタンのクリックイベントで呼び出される関数を直接呼び出す
-    #* 元は gr.HTML のはずだがうまくいかない（エラーではなくなったけど、機能しない）
-    # reload_func = getattr(globals()[f"FilerGroup{tab1}"], f"reload_{tab2.lower()}")
-    # elms[tab1][tab2]['table'] = gr.HTML(reload_func()[0])
+    # # TODO 'reload'ボタンのクリックイベントで呼び出される関数を直接呼び出す
+    # #* 元は gr.HTML のはずだがうまくいかない（エラーではなくなったけど、機能しない）
+    # # reload_func = getattr(globals()[f"FilerGroup{tab1}"], f"reload_{tab2.lower()}")
+    # # elms[tab1][tab2]['table'] = gr.HTML(reload_func()[0])
 
-    elms[tab1][tab2]['files'].upload(
-        fn=getattr(globals()[f"FilerGroup{tab1}"], f"upload_{tab2.lower()}"),
-        inputs=[elms[tab1][tab2]['files']],
-        #* 指定すると何も return していないのでリセットされてしまう
-        # 指定なしで既存には影響ないが、いまアップロードしたものが追加されるわけではない（実際に困るわけでもないのでまだそのまま）
-        # outputs=[elms[tab1][tab2]['table']],
-    )
+    # elms[tab1][tab2]['files'].upload(
+    #     fn=getattr(globals()[f"FilerGroup{tab1}"], f"upload_{tab2.lower()}"),
+    #     inputs=[elms[tab1][tab2]['files']],
+    #     #* 指定すると何も return していないのでリセットされてしまう
+    #     # 指定なしで既存には影響ないが、いまアップロードしたものが追加されるわけではない（実際に困るわけでもないのでまだそのまま）
+    #     # outputs=[elms[tab1][tab2]['table']],
+    # )
+    
+    #* gradio.File Component を使わないアップロード (Component にプログレスバーが存在しないため)
+    # TODO style が想定通りに適用されていない
+    with gr.Row():
+        target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
+        html_content = f"""
+            <h2>File Upload</h2>
+            <div class="uploadArea">
+                <input type="file" id="fileUpload_{tab1.lower()}" name="fileUpload_{tab1.lower()}">
+                <div>
+                    <button class="btn-like-bs btn-like-bs-primary" id="uploadButton_{tab1.lower()}" onclick="uploadFile('{tab1.lower()}', '{target_path}')">Upload</button>
+                    <button class="btn-like-bs btn-like-bs-dark" id="cancelButton_{tab1.lower()}" onclick="cancelUpload('{tab1.lower()}')">Cancel</button>
+                </div>
+            <div>
+            <div class="uploadAreaStatus">
+                <progress class="hidden" id="progressBar_{tab1.lower()}" value="0" max="100"></progress>
+                <div class="uploadStatus" id="uploadStatus_{tab1.lower()}"></div>
+            </div>
+        """
+        gr.HTML(html_content)
 
     # TODO これを ui_set() 時にも呼びたい
     elms[tab1][tab2]['reload'].click(

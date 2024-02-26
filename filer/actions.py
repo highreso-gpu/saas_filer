@@ -119,7 +119,7 @@ def upload(files, dir, is_zip = False):
     dst_dir = os.path.join(os.path.abspath("."), dir)
 
     #* 一旦 tmp へアップロード
-    # tqdm.tqdm がプログレスバー
+    # tqdm.tqdm がプログレスバーだが、ループごとの進捗のため時間の目安にはならない      
     for file in tqdm.tqdm(files):
         tmp_stem, ext = os.path.splitext(os.path.basename(file.name))
 
@@ -150,7 +150,7 @@ def upload(files, dir, is_zip = False):
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
                 continue
-            # TODO tmp からのコピーではなく直接アップロードできる？zip はまた別問題だが...
+            # tmp を経由してからのコピーではなく直接指定パスへアップロードはできない様子
             # 展開後に .zip や単一ファイルを tmp から削除することはできるが、一時的にはやはり容量を食う
             # 今回の要求としてはストレージにはセンシティブなため、やはり直接処理したいが...
             shutil.copy(file.name, filepath)
