@@ -2,7 +2,7 @@ import os
 from typing import List
 import gradio as gr
 
-from modules import script_callbacks, sd_models, shared
+from modules import script_callbacks
 import filer.models as filer_models
 import filer.actions as filer_actions
 from filer.checkpoints import FilerGroupCheckpoints
@@ -10,7 +10,7 @@ from filer.lora import FilerGroupLora
 from filer.controlnet import FilerGroupControlNet
 from filer.vae import FilerGroupVAE
 from filer.other import FilerGroupOther
-import filer.system as about_system
+# import filer.system as about_system
 
 def js_only():
     pass
@@ -44,26 +44,26 @@ def save_settings(*input_settings: List[str]) -> List[str]:
 
 elms = {}
 
-def ui_system():
-    with gr.Row():
-        about_basic = gr.Button("Basic")
-        about_hashes = gr.Button("Hashes")
-        about_pip_list = gr.Button("pip list")
-    with gr.Row():
-        about_text = gr.Textbox(label="System Information",lines=20,Interactive=False)
+# def ui_system():
+#     with gr.Row():
+#         about_basic = gr.Button("Basic")
+#         about_hashes = gr.Button("Hashes")
+#         about_pip_list = gr.Button("pip list")
+#     with gr.Row():
+#         about_text = gr.Textbox(label="System Information",lines=20,Interactive=False)
 
-    about_basic.click(
-        fn=about_system.print_about_basic,
-        outputs=[about_text],
-    )
-    about_hashes.click(
-        fn=about_system.print_hashes,
-        outputs=[about_text],
-    )
-    about_pip_list.click(
-        fn=about_system.print_pip_list,
-        outputs=[about_text],
-    )
+#     about_basic.click(
+#         fn=about_system.print_about_basic,
+#         outputs=[about_text],
+#     )
+#     about_hashes.click(
+#         fn=about_system.print_hashes,
+#         outputs=[about_text],
+#     )
+#     about_pip_list.click(
+#         fn=about_system.print_pip_list,
+#         outputs=[about_text],
+#     )
 
 def ui_dir(tab1):
     global elms
