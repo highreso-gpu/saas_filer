@@ -97,8 +97,8 @@ class FilerGroupImages(FilerGroupBase):
             <thead>
                 <tr>
                     <th></th>
-                    <th>Filepath</th>
-                    <th>files</th>
+                    <th>file</th>
+                    <th>file count</th>
                     <th>download</th>
                 </tr>
             </thead>

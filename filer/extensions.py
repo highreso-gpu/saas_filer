@@ -39,36 +39,3 @@ class FilerGroupExtensions(FilerGroupBase):
             rs.append(r)
 
         return rs
-
-    @classmethod
-    def _table(cls, name, rs):
-        name = f"{cls.name}_{name}"
-        code = f"""
-        <table>
-            <thead>
-                <tr>
-                    <th></th>
-                    <th>name</th>
-                    <th>download</th>
-                </tr>
-            </thead>
-            <tbody>
-        """
-
-        for r in rs:
-            code += f"""
-                <tr class="filer_{name}_row" data-title="{r['title']}">
-                    <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows_{name}()"></td>
-                    <td class="filer_filename">{r['filename']}</td>
-                    <td><a href="/file={r['filepath']}" download>
-                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
-                    </a></td>
-                </tr>
-                """
-
-        code += """
-            </tbody>
-        </table>
-        """
-
-        return code

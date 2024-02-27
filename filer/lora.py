@@ -1,29 +1,26 @@
 import os
 import pathlib
 
-from modules import shared, sd_models
+from modules import sd_models, shared
 from .base import FilerGroupBase
 from . import models as filer_models
 from . import actions as filer_actions
 
-class FilerGroupControlNet(FilerGroupBase):
-    name = 'controlnet'
+class FilerGroupLora(FilerGroupBase):
+    name = 'lora'
 
     @classmethod
     def get_active_dir(cls):
-        # TODO もし ACTIVE DIR 使うのであれば直接指定でもよいかも
-        # return os.path.abspath(shared.cmd_opts.controlnet_dir)
-        return "manually written path"
+        return os.path.abspath(shared.cmd_opts.loras_dir)
 
     @classmethod
     def _get_list(cls, dir):
         rs = []
         for filedir, subdirs, filenames in os.walk(dir):
             for filename in filenames:
-                # if not filename.endswith('.pth') :
+                # if not filename.endswith('.pt') and not filename.endswith('.safetensors'):
                 #     continue
 
-                #* filename と title 同じでは？違う場合もある？
                 r = {}
                 r['filename'] = filename
                 r['filepath'] = os.path.join(filedir, filename)

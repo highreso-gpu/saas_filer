@@ -19,7 +19,7 @@ def calc_sha256(filenames, filelist):
 
 def copy(filenames, filelist, dst_dir):
     if not dst_dir:
-        raise ValueError('Please Input Backup Directory')
+        raise ValueError('Please Input Destination Directory')
         return
 
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
@@ -49,7 +49,7 @@ def copy(filenames, filelist, dst_dir):
 
 def move(filenames, filelist, dst_dir):
     if not dst_dir:
-        raise ValueError('Please Input Backup Directory')
+        raise ValueError('Please Input Destination Directory')
         return
 
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
@@ -67,11 +67,11 @@ def move(filenames, filelist, dst_dir):
                 shutil.move(r['filepath'] + '.sha256', dst_path + '.sha256')
             except:
                 pass
-            if (os.path.exists(os.path.splitext(r['filepath'])[0] + '.yaml')):
-                try:
-                    shutil.move(os.path.splitext(r['filepath'])[0] + '.yaml', os.path.splitext(dst_path)[0] + '.yaml')
-                except:
-                    pass
+        if (os.path.exists(os.path.splitext(r['filepath'])[0] + '.yaml')):
+            try:
+                shutil.move(os.path.splitext(r['filepath'])[0] + '.yaml', os.path.splitext(dst_path)[0] + '.yaml')
+            except:
+                pass
     print("Move Done!")
 
 def delete(filenames, list):
@@ -113,8 +113,13 @@ def download(filenames, filelist):
     return files
 
 def upload(files, dir, is_zip = False):
+    # is_zip は filer class 毎に設定されており、True なら zip しか扱うことができない
+
+    #* Base Dir との結合
+    dst_dir = os.path.join(os.path.abspath("."), dir)
+
     #* 一旦 tmp へアップロード
-    # tqdm.tqdm がプログレスバー
+    # tqdm.tqdm がプログレスバーだが、ループごとの進捗のため時間の目安にはならない      
     for file in tqdm.tqdm(files):
         tmp_stem, ext = os.path.splitext(os.path.basename(file.name))
 
@@ -126,13 +131,13 @@ def upload(files, dir, is_zip = False):
             #* 文字数制限こっちも
             # filename = tmp_stem[:-8]
             filename = tmp_stem
-            filepath = os.path.join(dir, filename)
+            filepath = os.path.join(dst_dir, filename)
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
                 continue
             shutil.unpack_archive(file.name, filepath)
             # imagesの時は一覧への追加を試みる
-            if not dir:
+            if not dst_dir:
                 filer_images.list_append(filename)
         else:
             #* 文字数制限
@@ -140,12 +145,12 @@ def upload(files, dir, is_zip = False):
             #* ⇒ ランダム文字列の桁数分っぽいが、元のファイル名が短くなるということは付与されていない？
             # filename = tmp_stem[:-8] + ext
             filename = tmp_stem + ext
-            filepath = os.path.join(dir, filename)
+            filepath = os.path.join(dst_dir, filename)
 
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
                 continue
-            # TODO tmp からのコピーではなく直接アップロードできる？zip はまた別問題だが...
+            # tmp を経由してからのコピーではなく直接指定パスへアップロードはできない様子
             # 展開後に .zip や単一ファイルを tmp から削除することはできるが、一時的にはやはり容量を食う
             # 今回の要求としてはストレージにはセンシティブなため、やはり直接処理したいが...
             shutil.copy(file.name, filepath)
