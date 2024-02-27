@@ -5,7 +5,13 @@ def preload(_):
     """start Flask server for uploading"""
     flask_path = os.path.join(os.path.abspath("."), "extensions/saas_filer/api/flask_app.py")
     print()
-    print("### Start a server for API endpoints for file operations")
+
+    if not os.path.exists(flask_path):
+        print("### Error: Flask server for file operations does not exist")
+        print()
+        return
+
+    print("### Start a Flask server for file operations")
     print("#   -> path: '{}'".format(flask_path))
     print()
 

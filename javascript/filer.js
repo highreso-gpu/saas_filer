@@ -130,8 +130,8 @@ async function uploadFile(tab_name, target_path) {
 
     // error (network error, cors error)
     xhr.onerror = function() {
-        const message = "xhr.onerror: Network error or CORS error occurred";
-        console.log(message);
+        const message = "Network error or CORS error occurred";
+        console.log("xhr.onerror: " + message);
         uploadStatus.innerHTML = message;
         viewReset();
     }
