@@ -197,12 +197,13 @@ class FilerGroupBase:
         """
 
         for r in rs:
+            fullpath = os.path.join(os.path.abspath("."), r['filepath'])
             code += f"""
                 <tr class="filer_{name}_row" data-title="{r['title']}">
                     <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows('{name}')"></td>
                     <td class="filer_title">{r['title']}</td>
                     <td style="text-align: right">{r['size']}</td>
-                    <td><a href="/file={r['filepath']}" download>
+                    <td><a href="/file={fullpath}" download>
                         <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
                     </a></td>
                 </tr>
