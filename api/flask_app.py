@@ -28,5 +28,5 @@ def upload_file() -> str:
         return f"Upload process failed<br>({e})"
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=55000)
 
