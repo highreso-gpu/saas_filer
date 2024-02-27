@@ -19,13 +19,13 @@ def calc_sha256(filenames, filelist):
 
 def copy(filenames, filelist, dst_dir):
     if not dst_dir:
-        raise ValueError('Please Input Backup Directory')
+        raise ValueError('Please Input Destination Directory')
         return
 
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
 
         dst_path = os.path.join(dst_dir, r['filename'])
-        
+
         if os.path.exists(dst_path):
             print(f"Already exists: {dst_path}")
             continue
@@ -49,13 +49,13 @@ def copy(filenames, filelist, dst_dir):
 
 def move(filenames, filelist, dst_dir):
     if not dst_dir:
-        raise ValueError('Please Input Backup Directory')
+        raise ValueError('Please Input Destination Directory')
         return
-    
+
     for r in tqdm.tqdm(list(filter(lambda x: x['title'] in filenames.split(','), filelist))):
 
         dst_path = os.path.join(dst_dir, r['filename'])
-        
+
         if os.path.exists(dst_path):
             print(f"Already exists: {dst_path}")
             continue
@@ -67,11 +67,11 @@ def move(filenames, filelist, dst_dir):
                 shutil.move(r['filepath'] + '.sha256', dst_path + '.sha256')
             except:
                 pass
-            if (os.path.exists(os.path.splitext(r['filepath'])[0] + '.yaml')):
-                try:
-                    shutil.move(os.path.splitext(r['filepath'])[0] + '.yaml', os.path.splitext(dst_path)[0] + '.yaml')
-                except:
-                    pass
+        if (os.path.exists(os.path.splitext(r['filepath'])[0] + '.yaml')):
+            try:
+                shutil.move(os.path.splitext(r['filepath'])[0] + '.yaml', os.path.splitext(dst_path)[0] + '.yaml')
+            except:
+                pass
     print("Move Done!")
 
 def delete(filenames, list):
@@ -108,39 +108,55 @@ def download(filenames, filelist):
             zip_path = shutil.make_archive(r['filename'], 'zip', root_dir=r['filepath'])
             files.append(zip_path)
         else:
-            files.append(r['filepath']) 
+            files.append(r['filepath'])
     print("Download prepare Done! (Link is below)")
     return files
 
 def upload(files, dir, is_zip = False):
-    # アップロードされたファイルはtmpに存在する
+    # is_zip は filer class 毎に設定されており、True なら zip しか扱うことができない
+
+    #* Base Dir との結合
+    dst_dir = os.path.join(os.path.abspath("."), dir)
+
+    #* 一旦 tmp へアップロード
+    # tqdm.tqdm がプログレスバーだが、ループごとの進捗のため時間の目安にはならない      
     for file in tqdm.tqdm(files):
         tmp_stem, ext = os.path.splitext(os.path.basename(file.name))
-        
+
         # zipモードの時は展開する
         if is_zip:
             if ext != '.zip':
                 raise ValueError("Only upload zip.")
                 continue
-            filename = tmp_stem[:-8]
-            filepath = os.path.join(dir, filename)
+            #* 文字数制限こっちも
+            # filename = tmp_stem[:-8]
+            filename = tmp_stem
+            filepath = os.path.join(dst_dir, filename)
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
                 continue
             shutil.unpack_archive(file.name, filepath)
             # imagesの時は一覧への追加を試みる
-            if not dir:
+            if not dst_dir:
                 filer_images.list_append(filename)
         else:
+            #* 文字数制限
             # アップロードされたファイル名の末尾には8桁のランダム文字列が付与されている
-            filename = tmp_stem[:-8] + ext
-            filepath = os.path.join(dir, filename)
+            #* ⇒ ランダム文字列の桁数分っぽいが、元のファイル名が短くなるということは付与されていない？
+            # filename = tmp_stem[:-8] + ext
+            filename = tmp_stem + ext
+            filepath = os.path.join(dst_dir, filename)
 
             if os.path.exists(filepath):
                 print(f"Already exists: {filepath}")
                 continue
+            # tmp を経由してからのコピーではなく直接指定パスへアップロードはできない様子
+            # 展開後に .zip や単一ファイルを tmp から削除することはできるが、一時的にはやはり容量を食う
+            # 今回の要求としてはストレージにはセンシティブなため、やはり直接処理したいが...
             shutil.copy(file.name, filepath)
+
     print("Upload Done!")
+    #* return がないので呼び出し元では空になる
 
 def urls(urls, dst_dir):
     for url in tqdm.tqdm(urls.split("\n")):

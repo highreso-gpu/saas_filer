@@ -97,8 +97,9 @@ class FilerGroupImages(FilerGroupBase):
             <thead>
                 <tr>
                     <th></th>
-                    <th>Filepath</th>
-                    <th>files</th>
+                    <th>file</th>
+                    <th>file count</th>
+                    <th>download</th>
                 </tr>
             </thead>
             <tbody>
@@ -110,6 +111,9 @@ class FilerGroupImages(FilerGroupBase):
                     <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows_{name}()"></td>
                     <td class="filer_title">{r['title']}</td>
                     <td class="filer_files">{r['files']}</td>
+                    <td><a href="/file={r['filepath']}" download>
+                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
+                    </a></td>
                 </tr>
                 """
 

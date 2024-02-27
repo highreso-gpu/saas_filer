@@ -22,6 +22,7 @@ class FilerGroupHypernetworks(FilerGroupBase):
 
     @classmethod
     def state(cls, tab2, filename):
+        # pytorch モデルパラメータの読み込み
 
         filepath = os.path.join(cls.get_dir(tab2), filename)
 
@@ -90,6 +91,7 @@ class FilerGroupHypernetworks(FilerGroupBase):
                     <th>state</th>
                     <th>hash</th>
                     <th>sha256</th>
+                    <th>download</th>
                 </tr>
             </thead>
             <tbody>
@@ -104,6 +106,9 @@ class FilerGroupHypernetworks(FilerGroupBase):
                     <td class="filer_state"><input onclick="state(this, '{name}', '{r['title']}')" type="button" value="state" class="gr-button gr-button-lg gr-button-secondary"></td>
                     <td class="filer_hash">{r['hash']}</td>
                     <td class="filer_sha256">{r['sha256']}</td>
+                    <td><a href="/file={r['filepath']}" download>
+                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
+                    </a></td>
                 </tr>
                 """
 

@@ -161,3 +161,8 @@ cython_debug/
 
 # macOS
 .DS_Store
+
+# Backup Dir Settings
+config/config.json
+# Backup Dir 
+backup_dir
