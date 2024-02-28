@@ -1,4 +1,3 @@
-const FLASK_HOST = "http://127.0.0.1:55000"
 const xhrObjects = {
     checkpoints: new XMLHttpRequest(),
     lora: new XMLHttpRequest(),
@@ -58,8 +57,14 @@ function select_all(name, che){
 	rows(name)
 }
 
+// python 経由で環境変数から Flask のホストを取得
+function getFlaskHost() {
+    return document.getElementById("flaskHost").textContent;
+}
+
 //* Flask app 経由でファイルアップロード（同名ファイルは上書き）
 async function uploadFile(tab_name, target_path) {
+    const FLASK_HOST = getFlaskHost();
     const endpoint = FLASK_HOST + "/upload";
     const fileInput = document.getElementById("fileInput_" + tab_name);
     const file = fileInput.files[0];
@@ -157,6 +162,7 @@ async function uploadFile(tab_name, target_path) {
      * > // ブラウザーはこの部分にバグがありがち
      */
     xhr.open("POST", endpoint, true);
+    // console.log('endpoint: ' + endpoint);
 
     formData.append("file", file);
     formData.append("target_path", target_path);
