@@ -1,3 +1,4 @@
+from dotenv import load_dotenv
 import os
 from typing import List
 import gradio as gr
@@ -11,6 +12,11 @@ from filer.controlnet import FilerGroupControlNet
 from filer.vae import FilerGroupVAE
 from filer.other import FilerGroupOther
 # import filer.system as about_system
+
+load_dotenv(verbose=True)
+
+HOST_DOMAIN = os.getenv("HOST_DOMAIN", "imagegen.highreso.jp")
+FLASK_PORT = os.getenv("API_FILER_PORT", 55000)
 
 def js_only():
     pass
@@ -180,7 +186,6 @@ def on_ui_tabs():
                     gr.HTML("Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます（Base_Dir は固定です）")
                 settings = []
                 for k, v in filer_models.load_settings().items():
-                    print(k, v)
                     with gr.Row():
                         #* labelを使ってしまうと、stable-diffusion-webui/ui-config.json にそのキーで登録され、それ以降 value 初期表示が更新できなくなるため注意
                         settings.append(gr.Textbox(show_label=False, info=k.title(), value=v, interactive=True))
@@ -188,6 +193,12 @@ def on_ui_tabs():
                     apply_settings = gr.Button("Apply settings")
                 with gr.Row():
                     result_message = gr.HTML("")
+                with gr.Row():
+                    #*（常に非表示）Flask ホスト設定のための項目
+                    html_content = f"""
+                        <div class="hidden" id="flaskHost">http://{HOST_DOMAIN}:{FLASK_PORT}</div>
+                    """
+                    gr.HTML(html_content)
 
             # TODO  Basic で全体の使用容量も確認できるので、オフにするなら他へ流用
             # with gr.TabItem("System"):
