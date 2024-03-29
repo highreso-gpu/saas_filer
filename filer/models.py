@@ -1,13 +1,18 @@
-import os
-import pathlib
 import json
+import os
+from pathlib import Path
+import sys
 
 # https://github.com/AUTOMATIC1111/stable-diffusion-webui/blob/master/modules/sd_models.py
 from modules import sd_models
 
+# Import from parent directory
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from const.load import DATA_DIR
+
 """
 Backup Dir の読込と更新
-設定パス: stable-diffusion-webui/extensions/saas_filer/config/config.json
+設定パス: f"{DATA_DIR}/extensions/saas_filer/config/config.json"
 """
 
 default_settings = {
@@ -21,8 +26,8 @@ default_settings = {
 
 #* 全体の設定を取得
 def load_settings():
-    p = pathlib.Path(__file__).parts[-4:-2]
-    filepath = os.path.join(p[0], p[1], 'config', 'config.json')
+    p = Path(__file__).parts[-4:-2]
+    filepath = os.path.join(DATA_DIR, p[0], p[1], 'config', 'config.json')
     # print("filepath: {}".format(filepath))
     settings = default_settings
     if os.path.exists(filepath):
@@ -51,8 +56,8 @@ def load_backup_dir(name):
     return dir
 
 def save_settings(*input_settings: list) -> bool:
-    p = pathlib.Path(__file__).parts[-4:-2]
-    filepath = os.path.join(p[0], p[1], 'config', 'config.json')
+    p = Path(__file__).parts[-4:-2]
+    filepath = os.path.join(DATA_DIR, p[0], p[1], 'config', 'config.json')
     data = {}
     if os.path.exists(filepath):
         with open(filepath) as f:
