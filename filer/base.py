@@ -1,13 +1,17 @@
 import os
+from pathlib import Path
+import sys
 import traceback
-import pathlib
-import yaml
-import torch
-from safetensors.torch import save_file
+from urllib.parse import urljoin
 
-from modules import sd_models
-from . import models as filer_models
 from . import actions as filer_actions
+from . import models as filer_models
+
+# Import from parent directory
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from const.load import SAAS_DOMAIN, SUB_PATH
+import scripts.common as common
+
 
 class FilerGroupBase:
     name = ''
@@ -196,14 +200,18 @@ class FilerGroupBase:
             <tbody>
         """
 
+        gradio_port = 7860
+        base_url = f"http://{SAAS_DOMAIN}:{gradio_port}" if common.is_development() else f"https://{SAAS_DOMAIN}/{SUB_PATH}"
+
         for r in rs:
-            fullpath = os.path.join(os.path.abspath("."), r['filepath'])
+            file_path = f"file={r['filepath']}"
+            download_link = urljoin(base_url, file_path)
             code += f"""
                 <tr class="filer_{name}_row" data-title="{r['title']}">
                     <td class="filer_checkbox"><input class="filer_{name}_select" type="checkbox" onClick="rows('{name}')"></td>
                     <td class="filer_title">{r['title']}</td>
                     <td style="text-align: right">{r['size']}</td>
-                    <td><a href="/file={fullpath}" download>
+                    <td><a href="{download_link}" download>
                         <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
                     </a></td>
                 </tr>

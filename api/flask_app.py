@@ -1,26 +1,22 @@
-from dotenv import load_dotenv
+import os
+from pathlib import Path
+import sys
+
 from flask import Flask, request
 from flask_cors import CORS
-import os
-import werkzeug
+from werkzeug.utils import secure_filename
 
-"""
-Load environment variables from a .env file.
-
-If necessary, create a .env file in the root directory of either the 'saas_filer' or 'stable-diffusion-webui' projects.
-(Note: This is usually not necessary.)
-"""
-load_dotenv(verbose=True)
-
-HOST_DOMAIN = os.getenv("HOST_DOMAIN", "imagegen.highreso.jp")
-GRADIO_PORT = os.getenv("GRADIO_PORT", 7860)
-FLASK_PORT = os.getenv("API_FILER_PORT", 55000)
+# Import from parent directory
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from const.load import SAAS_DOMAIN, FLASK_PORT, SUB_PATH
+import scripts.common as common
 
 app = Flask(__name__)
 
 # CORS settings
-allowed_origins = [f"{scheme}://{HOST_DOMAIN}:{GRADIO_PORT}" for scheme in ["http", "https"]]
-CORS(app, resources={r"/*": {"origins": allowed_origins}})
+# FIXME Requests are allowed even from origins outside the configured set.
+allowed_origins = "*" if common.is_development() else [f"{scheme}://{SAAS_DOMAIN}:*" for scheme in ["http", "https"]]
+CORS(app, resources={rf"/{SUB_PATH}*": {"origins": allowed_origins}})
 
 @app.route('/upload', methods=['POST'])
 def upload_file() -> str:
@@ -38,7 +34,7 @@ def upload_file() -> str:
 
     try:
         file = request.files['file']
-        filename = werkzeug.utils.secure_filename(file.filename)
+        filename = secure_filename(file.filename)
         file.save(os.path.join(app.config['UPLOAD_DIR'], filename))
         return 'Upload process completed successfully'
     
@@ -47,5 +43,5 @@ def upload_file() -> str:
 
 if __name__ == '__main__':
     print(" * Allowing origins:", allowed_origins)
-    app.run(port=FLASK_PORT)
-
+    # Production environment will result in a 502 Bad Gateway error in nginx if not exposed externally.
+    app.run(host='0.0.0.0', port=FLASK_PORT)

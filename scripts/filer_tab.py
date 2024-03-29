@@ -1,9 +1,11 @@
-from dotenv import load_dotenv
 import os
+from pathlib import Path
+import sys
 from typing import List
-import gradio as gr
 
+import gradio as gr
 from modules import script_callbacks
+
 import filer.models as filer_models
 import filer.actions as filer_actions
 from filer.checkpoints import FilerGroupCheckpoints
@@ -13,10 +15,11 @@ from filer.vae import FilerGroupVAE
 from filer.other import FilerGroupOther
 # import filer.system as about_system
 
-load_dotenv(verbose=True)
+# Import from parent directory
+sys.path.append(str(Path(__file__).resolve().parent.parent))
+from const.load import SAAS_DOMAIN, FLASK_PORT, SUB_PATH, DATA_DIR
+import scripts.common as common
 
-HOST_DOMAIN = os.getenv("HOST_DOMAIN", "imagegen.highreso.jp")
-FLASK_PORT = os.getenv("API_FILER_PORT", 55000)
 
 def js_only():
     pass
@@ -79,6 +82,7 @@ def ui_dir(tab1):
 
     with gr.Row():
         target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
+        # target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
         elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Target Path", value=target_path, interactive=False)
 
 def ui_set(tab1, tab2):
@@ -114,6 +118,7 @@ def ui_set(tab1, tab2):
     # TODO 非ホバー時にボタンの style が想定通りに適用されていない
     with gr.Row():
         target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
+        # target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
         html_content = f"""
             <h2>File Upload</h2>
             <div class="uploadArea">
@@ -194,9 +199,9 @@ def on_ui_tabs():
                 with gr.Row():
                     result_message = gr.HTML("")
                 with gr.Row():
-                    #*（常に非表示）Flask ホスト設定のための項目
+                    flask_host= f"http://{SAAS_DOMAIN}:{FLASK_PORT}" if common.is_development() else f"https://{SAAS_DOMAIN}/{SUB_PATH}"
                     html_content = f"""
-                        <div class="hidden" id="flaskHost">http://{HOST_DOMAIN}:{FLASK_PORT}</div>
+                        <div class="hidden" id="flaskHost">{flask_host}</div>
                     """
                     gr.HTML(html_content)
 
