@@ -8,7 +8,6 @@ def extract_subpath() -> str:
 
     try:
         script_path = os.path.join(os.path.abspath("."), "webui-user.sh")
-        # script_path ="/home/t-kobayashi/test_extract_subpath.txt"
         command = f"grep 'export COMMANDLINE_ARGS' {script_path} | grep -v '#' | sed 's/.*--subpath=\\([^ \"]*\\).*/\\1/'"
         ret = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
         print(f"subpath: {ret.stdout}")
