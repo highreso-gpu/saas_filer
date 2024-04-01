@@ -63,7 +63,7 @@ function getFlaskHost() {
 }
 
 //* Flask app 経由でファイルアップロード（同名ファイルは上書き）
-async function uploadFile(tab_name, target_path) {
+async function uploadFile(tab_name, target_path, is_dir_set) {
     const FLASK_HOST = getFlaskHost();
     const endpoint = FLASK_HOST + "/upload";
     const fileInput = document.getElementById("fileInput_" + tab_name);
@@ -94,10 +94,13 @@ async function uploadFile(tab_name, target_path) {
     // Initialize progress bar
     progressBar.value = 0;
 
+    if (is_dir_set.toLowerCase() !== 'true') {
+        uploadStatus.innerHTML = "The default backup directory is not set";
+        return;
+    }
+
     if (!file) {
-        const message = "No file selected";
-        console.log(message);
-        uploadStatus.innerHTML = message;
+        uploadStatus.innerHTML = "No file selected";
         progressBar.classList.add("hidden");
         return;
     }
@@ -124,8 +127,7 @@ async function uploadFile(tab_name, target_path) {
     // success
     xhr.onload = function() {
         if (xhr.status == 200) {
-            const message = xhr.response;
-            uploadStatus.innerHTML = message;
+            uploadStatus.innerHTML = xhr.response;
         } else {
             // HTTP status: 403/404/500/...
             console.log("onload status: " + xhr.status);
@@ -135,17 +137,13 @@ async function uploadFile(tab_name, target_path) {
 
     // error (network error, cors error)
     xhr.onerror = function() {
-        const message = "Network error or CORS error occurred";
-        console.log("xhr.onerror: " + message);
-        uploadStatus.innerHTML = message;
+        uploadStatus.innerHTML = "Network error or CORS error occurred";
         viewReset();
     }
 
     // abort (fired by cancelUpload())
     xhr.onabort = function() {
-        message = "Upload was cancelled";
-        console.log(message);
-        uploadStatus.innerHTML = message;
+        uploadStatus.innerHTML = "Upload was cancelled";
         progressBar.value = 0;
         viewReset();
     }
@@ -162,7 +160,6 @@ async function uploadFile(tab_name, target_path) {
      * > // ブラウザーはこの部分にバグがありがち
      */
     xhr.open("POST", endpoint, true);
-    // console.log('endpoint: ' + endpoint);
 
     formData.append("file", file);
     formData.append("target_path", target_path);
