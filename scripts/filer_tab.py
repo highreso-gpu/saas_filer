@@ -36,7 +36,10 @@ def check_backup_dir():
     if settings['backup_default_dir']:
         is_default_dir_set = True
     else:
-        html = '<h5 style="color: red">Settings タブでアップロード先の設定をしてください<h5>'
+        html = """
+            <h5 style='color: red'>Settings タブからアップロード先の設定をしてください</h5>
+            <h6>(Reload UI クリック後に反映されます)</h6>
+        """
 
     return html
 
