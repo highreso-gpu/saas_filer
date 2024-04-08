@@ -42,14 +42,15 @@ def load_backup_dir(name):
     dir = ''
     # タブ毎の固有の設定（key があってそれが有効である場合）
     if 'backup_'+name+'_dir' in settings and settings['backup_'+name+'_dir']:
-        dir = settings['backup_'+name+'_dir']
+        dir = os.path.join(DATA_DIR, settings['backup_'+name+'_dir'])
     # タブ毎の固有の設定がない場合は backup_default_dir を使う
     elif 'backup_default_dir' in settings and settings['backup_default_dir']:
-        dir = os.path.join(settings['backup_default_dir'], name)
+        dir = os.path.join(DATA_DIR, settings['backup_default_dir'], name)
 
     # config.json に設定があるがパスが存在しない場合は再起的にディレトリを作成
     if dir and not os.path.exists(dir):
         os.makedirs(dir)
+        print(f"Created a directory: {dir}")
 
     # 設定がなければ何もしない
 
@@ -85,11 +86,11 @@ def is_within_base_path(base_path: str, user_path: str) -> bool:
     """
     ユーザーが指定したパスがBase Path内にあるかどうかを判断する。
 
-    :param base_path: Base Pathの絶対パス
+    :param base_path: Base Path (絶対パス)
     :param user_path: ユーザーが指定したパス
     :return: ユーザーが指定したパスがBase Path内にある場合はTrue、そうでない場合はFalse
     """
-    abs_base_path = os.path.abspath(base_path)
-    abs_user_path = os.path.abspath(user_path)
-    
-    return abs_user_path.startswith(abs_base_path)
+    joined_user_path = os.path.join(base_path, user_path)
+    abs_user_path = os.path.abspath(joined_user_path)
+
+    return abs_user_path.startswith(base_path)
