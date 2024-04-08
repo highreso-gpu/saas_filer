@@ -40,11 +40,11 @@ load_dotenv(verbose=True)
 SAAS_DOMAIN = os.getenv("SAAS_DOMAIN", "imagegen.highreso.jp")
 FLASK_PORT = os.getenv("FLASK_PORT", 55000)
 
-# development
-DATA_DIR = os.path.abspath(".")             # Application root
-SUB_PATH = ''                               # No need to specify a subpath
-
-if not SAAS_DOMAIN in ["localhost", "127.0.0.1"]:
+if SAAS_DOMAIN in ["localhost", "127.0.0.1"]:
+    # development
+    DATA_DIR = os.path.abspath(".")             # Application root
+    SUB_PATH = ''                               # No need to specify a subpath
+else:
     # production
     DATA_DIR = extract_script_args('data-dir')  # Path for persistent data
     SUB_PATH = extract_script_args('subpath')   # Subpath for the application
