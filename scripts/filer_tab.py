@@ -48,7 +48,7 @@ def save_settings(*input_settings: List[str]) -> List[str]:
 
     #* それぞれの保存先設定を絶対パスへ変換
     dirs = ['checkpoints', 'lora', 'controlnet', 'vae', 'other']
-    result_list = [os.path.join(os.path.abspath("."), filer_models.load_backup_dir(x)) for x in dirs]
+    result_list = [os.path.join(DATA_DIR, filer_models.load_backup_dir(x)) for x in dirs]
 
     #* 保存の成否を HTML 用に追加
     if result:
@@ -91,8 +91,7 @@ def ui_dir(tab1):
         elms[tab1] = {}
 
     with gr.Row():
-        target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
-        # target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
+        target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
         elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Target Path", value=target_path, interactive=False)
 
 def ui_set(tab1, tab2):
@@ -128,8 +127,7 @@ def ui_set(tab1, tab2):
     # TODO 非ホバー時にボタンの style が想定通りに適用されていない
     with gr.Row():
         global is_default_dir_set
-        target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
-        # target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
+        target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
         html_content = f"""
             <h2>File Upload</h2>
             <div class="uploadArea">
@@ -196,7 +194,7 @@ def on_ui_tabs():
                         ui_set("Other", "Backup")
             with gr.TabItem("Settings"):
                 with gr.Row():
-                    gr.Textbox(show_label=False, info='Base_Dir', value=os.path.abspath(".") + os.sep, interactive=False)
+                    gr.Textbox(show_label=False, info='Base_Dir', value=DATA_DIR + os.sep, interactive=False)
                 with gr.Row():
                     html_content = """
                         <div style='margin-bottom: 0.5rem'>

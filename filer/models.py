@@ -64,9 +64,9 @@ def save_settings(*input_settings: list) -> bool:
             data = json.load(f)
     i = 0
     for k in default_settings.keys():
-        # *保存先のバリデーション (stable-diffusion-webui のプロジェクトディレクトリ以下であるように制限)
+        # *保存先のバリデーション (指定パス以下であるように制限)
         # 全て通らなければ何も保存されない
-        if not is_within_base_path(os.path.abspath("."), input_settings[i]):
+        if not is_within_base_path(DATA_DIR, input_settings[i]):
             print("Error: The path is not within the base path.")
             print(f"(the value being assigned to key({k}) is '{input_settings[i]}')")
             return False
