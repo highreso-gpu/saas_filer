@@ -13,7 +13,6 @@ from filer.lora import FilerGroupLora
 from filer.controlnet import FilerGroupControlNet
 from filer.vae import FilerGroupVAE
 from filer.other import FilerGroupOther
-# import filer.system as about_system
 
 # Import from parent directory
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -59,30 +58,9 @@ def save_settings(*input_settings: List[str]) -> List[str]:
             '※ Base_Dir 以外のディレクトリには設定できません' \
             '</h6>'
     result_list.append(html_message)
-    
+
     print(result_list)
     return result_list
-
-# def ui_system():
-#     with gr.Row():
-#         about_basic = gr.Button("Basic")
-#         about_hashes = gr.Button("Hashes")
-#         about_pip_list = gr.Button("pip list")
-#     with gr.Row():
-#         about_text = gr.Textbox(label="System Information",lines=20,Interactive=False)
-
-#     about_basic.click(
-#         fn=about_system.print_about_basic,
-#         outputs=[about_text],
-#     )
-#     about_hashes.click(
-#         fn=about_system.print_hashes,
-#         outputs=[about_text],
-#     )
-#     about_pip_list.click(
-#         fn=about_system.print_pip_list,
-#         outputs=[about_text],
-#     )
 
 def ui_dir(tab1):
     global elms
@@ -225,10 +203,6 @@ def on_ui_tabs():
                         <div class="hidden" id="flaskHost">{flask_host}</div>
                     """
                     gr.HTML(html_content)
-
-            # TODO  Basic で全体の使用容量も確認できるので、オフにするなら他へ流用
-            # with gr.TabItem("System"):
-            #     ui_system()
 
         apply_settings.click(
             fn=save_settings,

@@ -6,33 +6,6 @@ const xhrObjects = {
     other: new XMLHttpRequest()
 };
 
-function reload_checkpoints(_, _){
-    gradioApp().querySelector('#refresh_sd_model_checkpoint').click()
-}
-
-function state(button, name, title) {
-    textarea = gradioApp().querySelector('#'+name+'_title textarea')
-    textarea.value = title
-	textarea.dispatchEvent(new Event("input", { bubbles: true }))
-    gradioApp().querySelector('#state_'+name+'_button').click()
-}
-
-function load_files(button, title) {
-	name = 'files'
-    textarea = gradioApp().querySelector('#'+name+'_title textarea')
-    textarea.value = title
-	textarea.dispatchEvent(new Event("input", { bubbles: true }))
-    gradioApp().querySelector('#load_'+name+'_button').click()
-}
-
-function download_files(button, title) {
-	name = 'files'
-    textarea = gradioApp().querySelector('#'+name+'_title textarea')
-    textarea.value = title
-	textarea.dispatchEvent(new Event("input", { bubbles: true }))
-    gradioApp().querySelector('#download_'+name+'_button').click()
-}
-
 function rows(name){
     selected = []
     // _Select はチェックボックスのクラス名
@@ -154,7 +127,7 @@ async function uploadFile(tab_name, target_path, is_dir_set) {
 
     /**
      * イベントリスナーの後に open() を呼び出す
-     * 
+     *
      * {@link https://developer.mozilla.org/ja/docs/Web/API/XMLHttpRequestUpload}
      * > // 理論的には、 open() 呼び出しの後にイベントリスナーを設定することができますが、
      * > // ブラウザーはこの部分にバグがありがち
