@@ -16,11 +16,11 @@ Backup Dir の読込と更新
 """
 
 default_settings = {
-    'backup_default_dir': '',
-    'backup_checkpoints_dir': '',
-    'backup_lora_dir': '',
-    'backup_controlnet_dir': '',
-    'backup_vae_dir': '',
+    'backup_default_dir': 'models',
+    'backup_checkpoints_dir': 'models/Stable-diffusion',
+    'backup_lora_dir': 'models/Lora',
+    'backup_controlnet_dir': 'models/ControlNet',
+    'backup_vae_dir': 'models/VAE',
     'backup_other_dir': '',
     }
 
@@ -45,7 +45,7 @@ def load_backup_dir(name):
         dir = os.path.join(DATA_DIR, settings['backup_'+name+'_dir'])
     # タブ毎の固有の設定がない場合は backup_default_dir を使う
     elif 'backup_default_dir' in settings and settings['backup_default_dir']:
-        dir = os.path.join(DATA_DIR, settings['backup_default_dir'], name)
+        dir = os.path.join(DATA_DIR, settings['backup_default_dir'])
 
     # config.json に設定があるがパスが存在しない場合は再起的にディレトリを作成
     if dir and not os.path.exists(dir):
