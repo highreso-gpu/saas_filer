@@ -26,6 +26,10 @@ class FilerGroupBase:
         if tab2 == 'backup':
             return cls.get_backup_dir()
         return ''
+    
+    @classmethod
+    def get_rel_path(cls, dir, path):
+        return path.replace(dir, '').replace(os.sep, '/').lstrip('/')
 
     @classmethod
     # 子クラスでそれぞれ定義
