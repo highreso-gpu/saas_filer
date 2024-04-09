@@ -18,34 +18,19 @@ class FilerGroupBase:
     upload_zip = False
 
     @classmethod
-    # 子クラスでそれぞれ定義
-    def get_active_dir(cls):
-        return ''
-
-    @classmethod
     def get_backup_dir(cls):
         return filer_models.load_backup_dir(cls.name)
 
     @classmethod
     def get_dir(cls, tab2):
-        if tab2 == 'active':
-            return cls.get_active_dir()
-        elif tab2 == 'backup':
+        if tab2 == 'backup':
             return cls.get_backup_dir()
         return ''
-
-    @classmethod
-    def get_rel_path(cls, dir, path):
-        return path.replace(dir, '').replace(os.sep, '/').lstrip('/')
 
     @classmethod
     # 子クラスでそれぞれ定義
     def _get_list(cls, dir):
         pass
-
-    @classmethod
-    def list_active(cls):
-        return cls._get_list(cls.get_active_dir())
 
     @classmethod
     def list_backup(cls):
@@ -58,83 +43,13 @@ class FilerGroupBase:
         return cls._get_list(backup_dir)
 
     @classmethod
-    def download_urls(cls, urls):
-        filer_actions.urls(urls, cls.get_active_dir())
-        return 'Downloaded.'
-
-    @classmethod
-    def copy_active(cls, filenames):
-        filer_actions.copy(filenames, cls.list_active(), cls.get_backup_dir())
-        return cls.table_active()
-
-    @classmethod
-    def copy_backup(cls, filenames):
-        filer_actions.copy(filenames, cls.list_backup(), cls.get_active_dir())
-        return cls.table_backup()
-
-    @classmethod
-    def move_active(cls, filenames):
-        filer_actions.move(filenames, cls.list_active(), cls.get_backup_dir())
-        return cls.table_active()
-
-    @classmethod
-    def move_backup(cls, filenames):
-        filer_actions.move(filenames, cls.list_backup(), cls.get_active_dir())
-        return cls.table_backup()
-
-    @classmethod
-    def delete_active(cls, filenames):
-        filer_actions.delete(filenames, cls.list_active())
-        return cls.table_active()
-
-    @classmethod
     def delete_backup(cls, filenames):
         filer_actions.delete(filenames, cls.list_backup())
         return cls.table_backup()
 
     @classmethod
-    def calc_active(cls, filenames):
-        filer_actions.calc_sha256(filenames, cls.list_active())
-        return cls.table_active()
-
-    @classmethod
-    def calc_backup(cls, filenames):
-        filer_actions.calc_sha256(filenames, cls.list_backup())
-        return cls.table_backup()
-
-    @classmethod
-    def save_comment(cls, data):
-        filer_models.save_comment(cls.name, data)
-        return 'saved.'
-
-    @classmethod
-    def download_active(cls, filenames):
-        return filer_actions.download(filenames, cls.list_active())
-
-    @classmethod
-    def download_backup(cls, filenames):
-        return filer_actions.download(filenames, cls.list_backup())
-
-    @classmethod
-    def upload_active(cls, files):
-        return filer_actions.upload(files, cls.get_active_dir(), cls.upload_zip)
-
-    @classmethod
-    def upload_backup(cls, files):
-        #* return 中身なし
-        return filer_actions.upload(files, cls.get_backup_dir(), cls.upload_zip)
-
-    @classmethod
-    def table_active(cls):
-        return cls._table("active", cls.list_active())
-
-    @classmethod
     def table_backup(cls):
         return cls._table("backup", cls.list_backup())
-
-    @classmethod
-    def reload_active(cls):
-        return [cls.table_active(), '']
 
     @classmethod
     def reload_backup(cls):
@@ -155,7 +70,7 @@ class FilerGroupBase:
         """パスからファイルサイズを KB 単位で取得"""
         filesize = os.path.getsize(filepath)
         return cls.convert_to_kilobytes(filesize)
-    
+
     @classmethod
     def get_directory_size(cls, path: str) -> int:
         """path 以下のディレクトリの使用容量を再帰的に集計して取得"""
@@ -166,7 +81,7 @@ class FilerGroupBase:
 
             for dirpath, dirnames, filenames in os.walk(path):
                 for filename in filenames:
-                    filepath = os.path.join(dirpath, filename)  
+                    filepath = os.path.join(dirpath, filename)
                     total_size += os.path.getsize(filepath)
         except OSError as e:
             print("-------------------------------------------------------------------------------------------------------------------")
