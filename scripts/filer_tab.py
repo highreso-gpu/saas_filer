@@ -21,14 +21,26 @@ from const.load import SAAS_DOMAIN, FLASK_PORT, SUB_PATH, DATA_DIR
 import scripts.common as common
 
 
+elms = {}
+is_default_dir_set: bool = False    #* Settings タブで Backup_Default_Dir が設定されているか
+out_html = None
+
 def js_only():
     pass
 
 def check_backup_dir():
+    global is_default_dir_set
     settings = filer_models.load_settings()
+    is_default_dir_set = False
     html = ''
-    if not settings['backup_default_dir']:
-        html = 'First open the Settings tab and enter the backup directory'
+    if settings['backup_default_dir']:
+        is_default_dir_set = True
+    else:
+        html = """
+            <h5 style='color: red'>Settings タブからアップロード先の設定をしてください</h5>
+            <h6>(Reload UI クリック後に反映されます)</h6>
+        """
+
     return html
 
 def save_settings(*input_settings: List[str]) -> List[str]:
@@ -36,11 +48,11 @@ def save_settings(*input_settings: List[str]) -> List[str]:
 
     #* それぞれの保存先設定を絶対パスへ変換
     dirs = ['checkpoints', 'lora', 'controlnet', 'vae', 'other']
-    result_list = [os.path.join(os.path.abspath("."), filer_models.load_backup_dir(x)) for x in dirs]
+    result_list = [os.path.join(DATA_DIR, filer_models.load_backup_dir(x)) for x in dirs]
 
     #* 保存の成否を HTML 用に追加
     if result:
-        html_message = '<h5>保存先を更新しました<h5>'
+        html_message = '<h5>保存先を更新しました<h5>'   # 反映には Reload UI が必要
     else:
         html_message = '<h6 style="color: red">' \
             '保存先の更新に失敗しました<br>' \
@@ -50,8 +62,6 @@ def save_settings(*input_settings: List[str]) -> List[str]:
     
     print(result_list)
     return result_list
-
-elms = {}
 
 # def ui_system():
 #     with gr.Row():
@@ -81,8 +91,7 @@ def ui_dir(tab1):
         elms[tab1] = {}
 
     with gr.Row():
-        target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
-        # target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
+        target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
         elms[tab1]['backup_dir'] = gr.Textbox(show_label=False, info="Target Path", value=target_path, interactive=False)
 
 def ui_set(tab1, tab2):
@@ -117,14 +126,14 @@ def ui_set(tab1, tab2):
     #* gradio.File Component を使わないアップロード (Component にプログレスバーが存在しないため)
     # TODO 非ホバー時にボタンの style が想定通りに適用されていない
     with gr.Row():
-        target_path = os.path.join(os.path.abspath("."), filer_models.load_backup_dir(tab1.lower()))
-        # target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
+        global is_default_dir_set
+        target_path = os.path.join(DATA_DIR, filer_models.load_backup_dir(tab1.lower()))
         html_content = f"""
             <h2>File Upload</h2>
             <div class="uploadArea">
                 <input type="file" class=fileInput id="fileInput_{tab1.lower()}" name="fileInput_{tab1.lower()}">
                 <div>
-                    <button class="btn-like-bs btn-like-bs-primary" id="uploadButton_{tab1.lower()}" onclick="uploadFile('{tab1.lower()}', '{target_path}')">Upload</button>
+                    <button class="btn-like-bs btn-like-bs-primary" id="uploadButton_{tab1.lower()}" onclick="uploadFile('{tab1.lower()}', '{target_path}', '{str(is_default_dir_set).lower()}')">Upload</button>
                     <button class="btn-like-bs btn-like-bs-danger" id="cancelButton_{tab1.lower()}" disabled onclick="cancelUpload('{tab1.lower()}')">Cancel</button>
                 </div>
             <div>
@@ -152,7 +161,6 @@ def ui_set(tab1, tab2):
     elms[tab1][tab2]['select_all'].click(fn=js_only,_js="function(){return select_all('"+tab1.lower()+"_"+tab2.lower()+"', true)}")
     elms[tab1][tab2]['deselect_all'].click(fn=js_only,_js="function(){return select_all('"+tab1.lower()+"_"+tab2.lower()+"', false)}")
 
-out_html = None
 def on_ui_tabs():
     global out_html
     with gr.Blocks() as filer:
@@ -186,9 +194,22 @@ def on_ui_tabs():
                         ui_set("Other", "Backup")
             with gr.TabItem("Settings"):
                 with gr.Row():
-                    gr.Textbox(show_label=False, info='Base_Dir', value=os.path.abspath(".") + os.sep, interactive=False)
+                    gr.Textbox(show_label=False, info='Base_Dir', value=DATA_DIR + os.sep, interactive=False)
                 with gr.Row():
-                    gr.HTML("Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます（Base_Dir は固定です）")
+                    html_content = """
+                        <div style='margin-bottom: 0.5rem'>
+                            Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます
+                        </div>
+                        <ul>
+                            <li style>Base_Dir は固定です</li>
+                            <li>Backup_Default_Dir は設定必須です</li>
+                            <ul>
+                                <li>各種 Backup_[Model]_Dir に設定がない場合は Backup_Default_Dir にアップロードされます</li>
+                            </ul>
+                            <li>設定後はアプリケーション全体の Settings タグから Reload UI をクリックしてください</li>
+                        </ul>
+                    """
+                    gr.HTML(html_content)
                 settings = []
                 for k, v in filer_models.load_settings().items():
                     with gr.Row():
@@ -199,7 +220,7 @@ def on_ui_tabs():
                 with gr.Row():
                     result_message = gr.HTML("")
                 with gr.Row():
-                    flask_host= f"http://{SAAS_DOMAIN}:{FLASK_PORT}" if common.is_development() else f"https://{SAAS_DOMAIN}/{SUB_PATH}"
+                    flask_host = f"http://{SAAS_DOMAIN}:{FLASK_PORT}" if common.is_development() else f"https://{SAAS_DOMAIN}/{SUB_PATH}"
                     html_content = f"""
                         <div class="hidden" id="flaskHost">{flask_host}</div>
                     """

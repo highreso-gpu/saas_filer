@@ -3,6 +3,14 @@ import os
 import subprocess
 
 
+# from extensions.saas_filer.const.load import DATA_DIR
+"""
+Unable to retrieve command-line arguments due to lifecycle constraints, so retrieving from environment variables.
+Checking the consistency in const/load.py for each of them.
+
+https://github.com/AUTOMATIC1111/stable-diffusion-webui/wiki/Developing-extensions
+> if extension has preload.py file in its root directory, it is loaded before parsing commandline arg
+"""
 load_dotenv(verbose=True)
 DATA_DIR = os.getenv("DATA_DIR", "/storage/userdata")
 
@@ -12,8 +20,6 @@ def preload(_):
 
 def start_flask():
     """start Flask server for uploading"""
-    #* webui-user.sh 内の COMMANDLINE_ARGS --data-dir で指定したディレクトリの中にある extensions/saas_filer/api/flask_app.py を起動する
-    
     flask_path = os.path.join(DATA_DIR, "extensions/saas_filer/api/flask_app.py")
     print()
 
