@@ -20,6 +20,15 @@ def extract_script_args(param: str) -> str:
         print(f"cmd: {cpe.cmd}")
         raise cpe
 
+def compare_parameters(param_first: str, param_second: str) -> None:
+    """
+    Check if the parameters are the same.
+    Due to lifecycle constraints, we need to ensure consistency because some parameters are retrieved from .env in preload.py.
+    """
+    
+    if param_first != param_second:
+        raise ValueError(f"Parameters do not match: {param_first} != {param_second}")
+
 """
 Load environment variables from a .env file for development environment.
 
@@ -39,3 +48,6 @@ else:
     # production
     DATA_DIR = extract_script_args('data-dir')  # Path for persistent data
     SUB_PATH = extract_script_args('subpath')   # Subpath for the application
+
+    env_data_dir = os.getenv("DATA_DIR", "/storage/userdata")
+    compare_parameters(DATA_DIR, env_data_dir)
