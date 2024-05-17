@@ -88,6 +88,13 @@ def ui_set(tab1, tab2):
         elms[tab1][tab2]['select_all'] = gr.Button("Select All")
         elms[tab1][tab2]['deselect_all'] = gr.Button("Deselect All")
     with gr.Row():
+        html_content = """
+            <div style='margin-bottom: 0.5rem; margin-left: 0.5rem'>
+                ファイル一覧を表示または更新するには Reload ボタンをクリックしてください
+            </div>
+        """
+        gr.HTML(html_content)
+    with gr.Row():
         elms[tab1][tab2]['selected'] = gr.Textbox(
             elem_id=f"filer_{tab1.lower()}_{tab2.lower()}_selected",
             label='Selected',
@@ -109,6 +116,7 @@ def ui_set(tab1, tab2):
         html_content = f"""
             <h2>File Upload</h2>
             <div class="uploadArea">
+                <div class="uploadAreaCaution">※ファイル名は全角文字に非対応です</div>
                 <input type="file" class=fileInput id="fileInput_{tab1.lower()}" name="fileInput_{tab1.lower()}">
                 <div>
                     <button class="btn-like-bs btn-like-bs-primary" id="uploadButton_{tab1.lower()}" onclick="uploadFile('{tab1.lower()}', '{target_path}', '{str(is_default_dir_set).lower()}')">Upload</button>
