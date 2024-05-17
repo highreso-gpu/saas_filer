@@ -1,6 +1,7 @@
 import os
 
 from .base import FilerGroupBase
+from .util import FileSize
 
 
 class FilerGroupControlNet(FilerGroupBase):
@@ -9,6 +10,7 @@ class FilerGroupControlNet(FilerGroupBase):
     @classmethod
     def _get_list(cls, dir):
         rs = []
+        unit = 'GB'
         for filedir, subdirs, filenames in os.walk(dir):
             for filename in filenames:
                 # if not filename.endswith('.pth') :
@@ -18,7 +20,7 @@ class FilerGroupControlNet(FilerGroupBase):
                 r['filename'] = filename
                 r['filepath'] = os.path.join(filedir, filename)
                 r['title'] = cls.get_rel_path(dir, r['filepath'])
-                r['size'] = cls.get_filesize_gigabytes(r['filepath'])
+                r['size'] = FileSize().get_filesize(r['filepath'], unit)
 
                 rs.append(r)
 
