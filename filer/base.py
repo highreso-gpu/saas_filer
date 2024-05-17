@@ -26,7 +26,7 @@ class FilerGroupBase:
         if tab2 == 'backup':
             return cls.get_backup_dir()
         return ''
-    
+
     @classmethod
     def get_rel_path(cls, dir, path):
         return path.replace(dir, '').replace(os.sep, '/').lstrip('/')
@@ -59,21 +59,37 @@ class FilerGroupBase:
     def reload_backup(cls):
         return [cls.table_backup(), '']
 
-    @classmethod
-    def convert_to_kilobytes(cls, filesize: int) -> str:
-        """
-        ファイルサイズをカンマありの KB 単位へ
-        変換
-        小数点第2位まで表示（第3位を四捨五入）
-        """
-        kilobytes = round(filesize / 1024, 2)
-        return "{:,.2f}".format(kilobytes)
+    # @classmethod
+    # def convert_to_kilobytes(cls, filesize: int) -> str:
+    #     """
+    #     ファイルサイズをカンマありの KB 単位へ
+    #     変換
+    #     小数点第2位まで表示（第3位を四捨五入）
+    #     """
+    #     kilobytes = round(filesize / 1024, 2)
+    #     return "{:,.2f}".format(kilobytes)
+
+    # @classmethod
+    # def get_filesize_kilobytes(cls, filepath: str) -> str:
+    #     """パスからファイルサイズを KB 単位で取得"""
+    #     filesize = os.path.getsize(filepath)
+    #     return cls.convert_to_kilobytes(filesize)
 
     @classmethod
-    def get_filesize_kilobytes(cls, filepath: str) -> str:
-        """パスからファイルサイズを KB 単位で取得"""
+    def convert_to_gigabytes(cls, filesize: int) -> str:
+        """
+        ファイルサイズをカンマありの GB 単位へ
+        変換
+        小数点第3位まで表示（第4位を四捨五入）
+        """
+        gigabytes = round(filesize / 1024 ** 3, 3)
+        return "{:,.3f}".format(gigabytes)
+
+    @classmethod
+    def get_filesize_gigabytes(cls, filepath: str) -> str:
+        """パスからファイルサイズを GB 単位で取得"""
         filesize = os.path.getsize(filepath)
-        return cls.convert_to_kilobytes(filesize)
+        return cls.convert_to_gigabytes(filesize)
 
     @classmethod
     def get_directory_size(cls, path: str) -> int:
@@ -104,7 +120,7 @@ class FilerGroupBase:
         # directoryのサイズを取得
         dir_path = cls.get_dir(tab2)
         dir_size = cls.get_directory_size(dir_path)
-        dir_size_kilo = cls.convert_to_kilobytes(dir_size)
+        dir_size_g = cls.convert_to_gigabytes(dir_size)
 
         code = f"""
         <table>
@@ -112,7 +128,7 @@ class FilerGroupBase:
                 <tr>
                     <th></th>
                     <th>file</th>
-                    <th>size[KB]</th>
+                    <th>size[GB]</th>
                     <th>download</th>
                 </tr>
             </thead>
@@ -139,7 +155,7 @@ class FilerGroupBase:
         code += f"""
             </tbody>
         </table>
-        <div class="dir_usage">Total Disk Usage of Target Path: {dir_size_kilo} KB</div>
+        <div class="dir_usage">Total Disk Usage of Target Path: {dir_size_g} GB</div>
         """
 
         return code
