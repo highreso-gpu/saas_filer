@@ -95,7 +95,7 @@ class FilerGroupBase:
                     <td class="filer_title">{r['title']}</td>
                     <td style="text-align: right">{r['size']}</td>
                     <td><a href="{download_link}" download>
-                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
+                        <img src="https://cdn.icon-icons.com/icons2/1094/PNG/512/download1_78499.png" width="24" height="24">
                     </a></td>
                 </tr>
                 """
