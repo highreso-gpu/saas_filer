@@ -56,7 +56,7 @@ def save_settings(*input_settings: List[str]) -> List[str]:
     else:
         html_message = '<h6 style="color: red">' \
             '保存先の更新に失敗しました<br>' \
-            '※ Base_Dir 以外のディレクトリには設定できません' \
+            '※ 基準ディレクトリより上の階層には設定できません' \
             '</h6>'
     result_list.append(html_message)
 
