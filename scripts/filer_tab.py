@@ -197,7 +197,7 @@ def on_ui_tabs():
                     #     </ul>
                     # """
                     html_content = """
-                        <div style='margin: 0.5rem 1.0rem;'>設定後はアプリケーション全体の Settings タブから Reload UI をクリックしてください</div>
+                        <div style='margin: 0.5rem 1.0rem;'>設定後は、最上位の[Settings]タブから[Reload UI]をクリックし、変更を反映してください</div>
                     """
                     gr.HTML(html_content)
                 settings = []
