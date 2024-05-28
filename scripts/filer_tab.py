@@ -46,7 +46,8 @@ def save_settings(*input_settings: List[str]) -> List[str]:
     result = filer_models.save_settings(*input_settings)    # config.json 更新（なければ作成）
 
     #* それぞれの保存先設定を絶対パスへ変換
-    dirs = ['checkpoints', 'lora', 'controlnet', 'vae', 'other']
+    # dirs = ['checkpoints', 'lora', 'controlnet', 'vae', 'other']
+    dirs = ['other']
     result_list = [os.path.join(DATA_DIR, filer_models.load_backup_dir(x)) for x in dirs]
 
     #* 保存の成否を HTML 用に追加
@@ -55,7 +56,7 @@ def save_settings(*input_settings: List[str]) -> List[str]:
     else:
         html_message = '<h6 style="color: red">' \
             '保存先の更新に失敗しました<br>' \
-            '※ Base_Dir 以外のディレクトリには設定できません' \
+            '※ 基準ディレクトリより上の階層には設定できません' \
             '</h6>'
     result_list.append(html_message)
 
@@ -88,6 +89,13 @@ def ui_set(tab1, tab2):
         elms[tab1][tab2]['select_all'] = gr.Button("Select All")
         elms[tab1][tab2]['deselect_all'] = gr.Button("Deselect All")
     with gr.Row():
+        html_content = """
+            <div style='margin-bottom: 0.5rem; margin-left: 0.5rem'>
+                ファイル一覧を表示または更新するには Reload ボタンをクリックしてください
+            </div>
+        """
+        gr.HTML(html_content)
+    with gr.Row():
         elms[tab1][tab2]['selected'] = gr.Textbox(
             elem_id=f"filer_{tab1.lower()}_{tab2.lower()}_selected",
             label='Selected',
@@ -109,6 +117,7 @@ def ui_set(tab1, tab2):
         html_content = f"""
             <h2>File Upload</h2>
             <div class="uploadArea">
+                <div class="uploadAreaCaution">※ファイル名は全角文字に非対応です</div>
                 <input type="file" class=fileInput id="fileInput_{tab1.lower()}" name="fileInput_{tab1.lower()}">
                 <div>
                     <button class="btn-like-bs btn-like-bs-primary" id="uploadButton_{tab1.lower()}" onclick="uploadFile('{tab1.lower()}', '{target_path}', '{str(is_default_dir_set).lower()}')">Upload</button>
@@ -171,28 +180,33 @@ def on_ui_tabs():
                     with gr.TabItem("Backup"):
                         ui_set("Other", "Backup")
             with gr.TabItem("Settings"):
+                # with gr.Row():
+                #     gr.Textbox(show_label=False, info='Base_Dir', value=DATA_DIR + os.sep, interactive=False)
                 with gr.Row():
-                    gr.Textbox(show_label=False, info='Base_Dir', value=DATA_DIR + os.sep, interactive=False)
-                with gr.Row():
+                    # html_content = """
+                    #     <div style='margin-bottom: 0.5rem'>
+                    #         Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます
+                    #     </div>
+                    #     <ul>
+                    #         <li style>Base_Dir は固定です</li>
+                    #         <li>Backup_Default_Dir は設定必須です</li>
+                    #         <ul>
+                    #             <li>各種 Backup_[Model]_Dir に設定がない場合は Backup_Default_Dir にアップロードされます</li>
+                    #         </ul>
+                    #         <li>設定後はアプリケーション全体の Settings タブから Reload UI をクリックしてください</li>
+                    #     </ul>
+                    # """
                     html_content = """
-                        <div style='margin-bottom: 0.5rem'>
-                            Base_Dir 以下の各種 Backup_[Model]_Dir にファイルがアップロードされます
-                        </div>
-                        <ul>
-                            <li style>Base_Dir は固定です</li>
-                            <li>Backup_Default_Dir は設定必須です</li>
-                            <ul>
-                                <li>各種 Backup_[Model]_Dir に設定がない場合は Backup_Default_Dir にアップロードされます</li>
-                            </ul>
-                            <li>設定後はアプリケーション全体の Settings タグから Reload UI をクリックしてください</li>
-                        </ul>
+                        <div style='margin: 0.5rem 1.0rem;'>設定後は、最上位の[Settings]タブから[Reload UI]をクリックし、変更を反映してください</div>
                     """
                     gr.HTML(html_content)
                 settings = []
                 for k, v in filer_models.load_settings().items():
-                    with gr.Row():
+                    #* Other 以外は設定非表示（変更不可）
+                    if k == 'backup_other_dir':
+                        with gr.Row():
                         #* labelを使ってしまうと、stable-diffusion-webui/ui-config.json にそのキーで登録され、それ以降 value 初期表示が更新できなくなるため注意
-                        settings.append(gr.Textbox(show_label=False, info=k.title(), value=v, interactive=True))
+                            settings.append(gr.Textbox(show_label=False, info=k, value=v, interactive=True))
                 with gr.Row():
                     apply_settings = gr.Button("Apply settings")
                 with gr.Row():
@@ -209,10 +223,10 @@ def on_ui_tabs():
             inputs=settings,
             outputs=[
                 # 各タブの Backup Dir 表示を更新
-                elms['Checkpoints']['backup_dir'],
-                elms['Lora']['backup_dir'],
-                elms['ControlNet']['backup_dir'],
-                elms['VAE']['backup_dir'],
+                # elms['Checkpoints']['backup_dir'],
+                # elms['Lora']['backup_dir'],
+                # elms['ControlNet']['backup_dir'],
+                # elms['VAE']['backup_dir'],
                 elms['Other']['backup_dir'],
                 # save_settings の成否
                 result_message,

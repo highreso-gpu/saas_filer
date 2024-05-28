@@ -1,11 +1,11 @@
 import os
 from pathlib import Path
 import sys
-import traceback
 from urllib.parse import urljoin
 
 from . import actions as filer_actions
 from . import models as filer_models
+from .util import FileSize
 
 # Import from parent directory
 sys.path.append(str(Path(__file__).resolve().parent.parent))
@@ -26,7 +26,7 @@ class FilerGroupBase:
         if tab2 == 'backup':
             return cls.get_backup_dir()
         return ''
-    
+
     @classmethod
     def get_rel_path(cls, dir, path):
         return path.replace(dir, '').replace(os.sep, '/').lstrip('/')
@@ -59,41 +59,6 @@ class FilerGroupBase:
     def reload_backup(cls):
         return [cls.table_backup(), '']
 
-    @classmethod
-    def convert_to_kilobytes(cls, filesize: int) -> str:
-        """
-        ファイルサイズをカンマありの KB 単位へ
-        変換
-        小数点第2位まで表示（第3位を四捨五入）
-        """
-        kilobytes = round(filesize / 1024, 2)
-        return "{:,.2f}".format(kilobytes)
-
-    @classmethod
-    def get_filesize_kilobytes(cls, filepath: str) -> str:
-        """パスからファイルサイズを KB 単位で取得"""
-        filesize = os.path.getsize(filepath)
-        return cls.convert_to_kilobytes(filesize)
-
-    @classmethod
-    def get_directory_size(cls, path: str) -> int:
-        """path 以下のディレクトリの使用容量を再帰的に集計して取得"""
-        total_size = 0
-        try:
-            # 【確認用】手動で OSError を発生
-            # os.path.getsize("test/path/noexist.txt")
-
-            for dirpath, dirnames, filenames in os.walk(path):
-                for filename in filenames:
-                    filepath = os.path.join(dirpath, filename)
-                    total_size += os.path.getsize(filepath)
-        except OSError as e:
-            print("-------------------------------------------------------------------------------------------------------------------")
-            print(f"An error occurred in function {traceback.extract_tb(e.__traceback__)[0][2]}: {e}")
-            print("-------------------------------------------------------------------------------------------------------------------")
-
-        return total_size
-
     # @classmethod
     # def _table(cls, name, rs):
     #     pass
@@ -101,10 +66,9 @@ class FilerGroupBase:
     @classmethod
     def _table(cls, tab2, rs):
         name = f"{cls.name}_{tab2}"
-        # directoryのサイズを取得
         dir_path = cls.get_dir(tab2)
-        dir_size = cls.get_directory_size(dir_path)
-        dir_size_kilo = cls.convert_to_kilobytes(dir_size)
+        unit = 'GB'
+        dir_size_unit = FileSize().get_dir_size(dir_path, unit)
 
         code = f"""
         <table>
@@ -112,7 +76,7 @@ class FilerGroupBase:
                 <tr>
                     <th></th>
                     <th>file</th>
-                    <th>size[KB]</th>
+                    <th>size[{unit}]</th>
                     <th>download</th>
                 </tr>
             </thead>
@@ -131,7 +95,7 @@ class FilerGroupBase:
                     <td class="filer_title">{r['title']}</td>
                     <td style="text-align: right">{r['size']}</td>
                     <td><a href="{download_link}" download>
-                        <img src="https://cdn.icon-icons.com/icons2/1288/PNG/512/1499345616-file-download_85359.png" width="24" height="24">
+                        <img src="https://cdn.icon-icons.com/icons2/1094/PNG/512/download1_78499.png" width="24" height="24">
                     </a></td>
                 </tr>
                 """
@@ -139,7 +103,7 @@ class FilerGroupBase:
         code += f"""
             </tbody>
         </table>
-        <div class="dir_usage">Total Disk Usage of Target Path: {dir_size_kilo} KB</div>
+        <div class="dir_usage">Total Disk Usage of Target Path: {dir_size_unit} {unit}</div>
         """
 
         return code
