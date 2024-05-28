@@ -57,6 +57,7 @@ def load_backup_dir(name):
     return dir
 
 def save_settings(*input_settings: list) -> bool:
+    """Other タブの設定のみ保存する"""
     p = Path(__file__).parts[-4:-2]
     filepath = os.path.join(DATA_DIR, p[0], p[1], 'config', 'config.json')
     data = {}
@@ -65,6 +66,9 @@ def save_settings(*input_settings: list) -> bool:
             data = json.load(f)
     i = 0
     for k in default_settings.keys():
+        if not k == 'backup_other_dir':
+            continue
+
         # *保存先のバリデーション (指定パス以下であるように制限)
         # 全て通らなければ何も保存されない
         if not is_within_base_path(DATA_DIR, input_settings[i]):

@@ -68,7 +68,7 @@ input[type="checkbox"]:checked::before {
   border-radius: 0.6rem;
   background: lightgray; /* 進行していない部分 */
 }
-  
+
 
 .uploadAreaStatus progress::-webkit-progress-bar {
   border-radius: 0.6rem;
@@ -89,6 +89,13 @@ input[type="checkbox"]:checked::before {
 .uploadStatus {
   font-size: 1.0em;
   font-weight: bold;
+}
+
+.uploadAreaCaution {
+  margin-bottom: 0.8rem;
+  font-weight:bold;
+  font-size: 0.8rem;
+  color: grey;
 }
 
 .hidden {
